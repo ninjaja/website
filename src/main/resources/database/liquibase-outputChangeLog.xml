@@ -1,0 +1,111 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="user" id="1587134689840-1">
+        <createTable tableName="category">
+            <column autoIncrement="true" name="id" type="SMALLINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="CHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="CHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="CHAR(200)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-2">
+        <createTable tableName="image">
+            <column autoIncrement="true" name="id" type="SMALLINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="project_id" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="CHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data" type="BLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-3">
+        <createTable tableName="project">
+            <column autoIncrement="true" name="id" type="SMALLINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="subgroup_id" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="CHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="CHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="CHAR(200)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-4">
+        <createTable tableName="subgroup">
+            <column autoIncrement="true" name="id" type="SMALLINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="category_id" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="CHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="CHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="CHAR(200)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-5">
+        <createTable tableName="user">
+            <column name="login" type="CHAR(30)">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="password" type="CHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="CHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-6">
+        <createIndex indexName="category_id" tableName="subgroup">
+            <column name="category_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-7">
+        <createIndex indexName="project_id" tableName="image">
+            <column name="project_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-8">
+        <createIndex indexName="subgroup_id" tableName="project">
+            <column name="subgroup_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-9">
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="image" constraintName="image_ibfk_1"
+                                 deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT"
+                                 referencedColumnNames="id" referencedTableName="project" validate="true"/>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-10">
+        <addForeignKeyConstraint baseColumnNames="subgroup_id" baseTableName="project" constraintName="project_ibfk_1"
+                                 deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT"
+                                 referencedColumnNames="id" referencedTableName="subgroup" validate="true"/>
+    </changeSet>
+    <changeSet author="user" id="1587134689840-11">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="subgroup" constraintName="subgroup_ibfk_1"
+                                 deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT"
+                                 referencedColumnNames="id" referencedTableName="category" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

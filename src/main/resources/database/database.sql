@@ -3,10 +3,10 @@ DROP DATABASE IF EXISTS website;
 CREATE DATABASE IF NOT EXISTS website;
 
 CREATE TABLE IF NOT EXISTS website.user (
+    id SMALLINT AUTO_INCREMENT,
     login CHAR(30) NOT NULL UNIQUE,
     password CHAR(30) NOT NULL,
-    full_name CHAR(100) NOT NULL,
-    PRIMARY KEY(login)
+    PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS website.category (

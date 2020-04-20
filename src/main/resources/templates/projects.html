@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Categories</title>
+</head>
+<body>
+<div>
+    <form method="post">
+        <input type="text" name="title" placeholder="Title">
+        <input type="text" name="url" placeholder="URL">
+        <input type="text" name="description" placeholder="Description">
+        <button type="submit">Add Category</button>
+    </form>
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>Title</th>
+        <th>URL</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${categories.empty}">
+        <td colspan="2"> No categories available</td>
+    </tr>
+    <tr th:each="category : ${categories}">
+        <td><span th:text="${category.id}"> id </span></td>
+        <td><span th:text="${category.title}"> Title </span></td>
+        <td><span th:text="${category.url}"> URL </span></td>
+        <td><span th:text="${category.description}"> Description </span></td>
+    </tr>
+    </tbody>
+
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</table>
+
+</body>
+</html>

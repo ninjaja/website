@@ -68,13 +68,13 @@
     </changeSet>
     <changeSet author="user" id="1587134689840-5">
         <createTable tableName="user">
+            <column autoIncrement="true" name="id" type="SMALLINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
             <column name="login" type="CHAR(30)">
-                <constraints nullable="false" primaryKey="true" unique="true"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="password" type="CHAR(30)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="full_name" type="CHAR(100)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -7,7 +7,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
+
+/**
+ *
+ * @author Dmitry Matrizaev
+ * @since 20.04.2020
+ */
 
 @Entity
 @Data
@@ -17,10 +25,15 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
+    @Size(min = 2, max = 30)
     private String title;
 
+    @NotNull
+    @Size(min = 2, max = 30)
     private String url;
 
+    @Size(max = 300)
     private String description;
 
     @OneToMany(mappedBy = "category")

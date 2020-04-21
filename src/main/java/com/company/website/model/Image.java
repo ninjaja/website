@@ -9,6 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+/**
+ *
+ * @author Dmitry Matrizaev
+ * @since 20.04.2020
+ */
 
 @Entity
 @Data
@@ -16,8 +24,10 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private int id;
 
+    @NotNull
+    @Size(min = 2, max = 30)
     private String title;
 
     @Lob

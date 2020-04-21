@@ -9,6 +9,23 @@ CREATE TABLE IF NOT EXISTS website.user (
     PRIMARY KEY(id)
 );
 
+CREATE TABLE IF NOT EXISTS website.roles (
+    id TINYINT AUTO_INCREMENT,
+    name CHAR(10) NOT NULL UNIQUE,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS website.user_role (
+    user_id SMALLINT NOT NULL,
+    role_id TINYINT NOT NULL,
+    FOREIGN KEY (user_id)
+        REFERENCES user(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (role_id)
+        REFERENCES role(id)
+        ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS website.category (
     id SMALLINT AUTO_INCREMENT,
     title CHAR(100) NOT NULL,
@@ -51,4 +68,7 @@ CREATE TABLE IF NOT EXISTS website.image (
         REFERENCES project(id)
         ON DELETE CASCADE
 );
+
+insert into website.roles(name) values ('ADMIN');
+insert into website.roles(name) values ('USER');
 

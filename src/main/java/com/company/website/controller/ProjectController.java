@@ -7,7 +7,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
+
+/**
+ *
+ * @author Dmitry Matrizaev
+ * @since 20.04.2020
+ */
 
 @Controller
 public class ProjectController {
@@ -16,21 +23,26 @@ public class ProjectController {
     CategoryRepository categoryRepository;
 
     @GetMapping("/")
-    public String greeting() {
+    public String greeting(Model model) {
+        model.addAttribute("categories", categoryRepository.findAll());
         return "home";
     }
 
-    @GetMapping("/projects")
-    public String allCategories(Model model) {
-        model.addAttribute("categories", categoryRepository.findAll());
-        return "projects";
+    @GetMapping("/home")
+    public String home() {
+        return "redirect:/";
     }
 
-    @PostMapping("/projects")
-    public String addCategory(@RequestParam String title, @RequestParam String url, @RequestParam String description, Model model) {
-        Category category = new Category(title, url, description);
+    @GetMapping("/adminconsole")
+    public String allCategories(Model model) {
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "adminconsole";
+    }
+
+    @PostMapping("/adminconsole")
+    public String addCategory(@Valid Category category, Model model) {
         categoryRepository.save(category);
         model.addAttribute("categories", categoryRepository.findAll());
-        return "projects";
+        return "redirect:/adminconsole";
     }
 }

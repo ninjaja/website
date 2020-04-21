@@ -9,7 +9,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
+
+/**
+ *
+ * @author Dmitry Matrizaev
+ * @since 20.04.2020
+ */
 
 @Entity
 @Data
@@ -17,12 +25,17 @@ public class Subgroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private int id;
 
+    @NotNull
+    @Size(min = 2, max = 30)
     private String title;
 
+    @NotNull
+    @Size(min = 2, max = 30)
     private String url;
 
+    @Size(max = 300)
     private String description;
 
     @ManyToOne

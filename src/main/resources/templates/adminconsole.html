@@ -1,12 +1,18 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8">
+    <title>Categories</title>
 </head>
 <body>
-<h1>Welcome! Check out my projects</h1>
-
+<div>
+    <form method="post">
+        <input type="text" name="title" placeholder="Title">
+        <input type="text" name="url" placeholder="URL">
+        <input type="text" name="description" placeholder="Description">
+        <button type="submit">Add Category</button>
+    </form>
+</div>
 <div>
     <table>
         <thead>
@@ -28,8 +34,13 @@
             <td><span th:text="${category.description}"> Description </span></td>
         </tr>
         </tbody>
+
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
     </table>
 </div>
+
 
 </body>
 </html>

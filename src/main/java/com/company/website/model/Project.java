@@ -1,6 +1,7 @@
 package com.company.website.model;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,6 +44,7 @@ public class Project {
     private Subgroup subgroup;
 
     @OneToMany(mappedBy = "project")
+    @ToString.Exclude
     private Set<Image> images;
 
     public Project() {

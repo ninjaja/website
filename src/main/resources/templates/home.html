@@ -1,34 +1,48 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Home Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
 <h1>Welcome! Check out my projects</h1>
-
+<div sec:authorize="hasAuthority('ADMIN')">
+    <form action="addCategory" method="post">
+        <input type="text" name="title" placeholder="Title">
+        <input type="text" name="url" placeholder="URL">
+        <input type="text" name="description" placeholder="Description">
+        <button type="submit">Add Category</button>
+    </form>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
 <div>
-    <table>
-        <thead>
-        <tr>
-            <th>id</th>
-            <th>Title</th>
-            <th>URL</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${categories.empty}">
-            <td colspan="2"> No categories available</td>
-        </tr>
-        <tr th:each="category : ${categories}">
-            <td><span th:text="${category.id}"> id </span></td>
-            <td><span th:text="${category.title}"> Title </span></td>
-            <td><span th:text="${category.url}"> URL </span></td>
-            <td><span th:text="${category.description}"> Description </span></td>
-        </tr>
-        </tbody>
-    </table>
+    <form th:action="viewCategory" method="post">
+        <table>
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>Title</th>
+                <th>URL</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${categories.empty}">
+                <td colspan="2"> No categories available</td>
+            </tr>
+            <tr th:each="category : ${categories}">
+                <td><span th:text="${category.id}"> id </span></td>
+                <td><span th:text="${category.title}"> Title </span></td>
+                <td><span th:text="${category.url}"> URL </span></td>
+                <td><span th:text="${category.description}"> Description </span></td>
+                <td><button type="submit" th:name="name" th:value="${category.title}" >View Category</button></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
 </div>
 
 </body>

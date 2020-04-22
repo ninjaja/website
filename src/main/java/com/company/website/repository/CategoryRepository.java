@@ -9,4 +9,7 @@ import org.springframework.data.repository.CrudRepository;
  * @since 20.04.2020
  */
 
-public interface CategoryRepository extends CrudRepository<Category, Integer> {}
+public interface CategoryRepository extends CrudRepository<Category, Integer> {
+
+    Category findByTitle(String name);
+}

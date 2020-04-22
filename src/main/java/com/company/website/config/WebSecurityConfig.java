@@ -48,26 +48,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()// TODO: 21.04.2020 change this!
                 .authorizeRequests()
-                    .antMatchers("/").permitAll()
-//                    .antMatchers("/adminconsole").hasRole("ADMIN")
+                    .antMatchers("/**").permitAll()
+//                    .antMatchers("/adminconsole/**").hasAuthority("ADMIN")
                     .anyRequest().authenticated()
                 .and()
                     .formLogin()
                     .loginPage("/login")
-//                    .defaultSuccessUrl("/adminconsole")
                     .permitAll()
                 .and()
                     .logout()
                     .permitAll();
     }
-
-
-    /*@Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-            .dataSource(dataSource)
-            .passwordEncoder(NoOpPasswordEncoder.getInstance()) // TODO: 20.04.2020 change to MD5
-            .usersByUsernameQuery("SELECT login, password FROM website.user WHERE login = ?")
-            .authoritiesByUsernameQuery("SELECT u.login, ur.roles FROM website.user u INNER JOIN user_role ur ON u.user_id = ur.user_id WHERE u.login=?");
-    }*/
 }

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <title th:text="${category.title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1 th:text="${category.title}"></h1>
+<h2 th:text="${category.description}"></h2>
+<div sec:authorize="hasAuthority('ADMIN')">
+    <form action="addSubgroup" method="post">
+        <input type="text" name="title" placeholder="Title">
+        <input type="text" name="url" placeholder="URL">
+        <input type="text" name="description" placeholder="Description">
+        <button type="submit">Add Subgroup</button>
+    </form>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Title</th>
+            <th>URL</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${subgroups.empty}">
+            <td colspan="2"> No subgroups available</td>
+        </tr>
+        <tr th:each="subgroup : ${subgroups}">
+            <td><span th:text="${subgroup.id}"> id </span></td>
+            <td><span th:text="${subgroup.title}"> Title </span></td>
+            <td><span th:text="${subgroup.url}"> URL </span></td>
+            <td><span th:text="${subgroup.description}"> Description </span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

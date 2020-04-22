@@ -1,6 +1,7 @@
 package com.company.website.model;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,6 +38,7 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category")
+    @ToString.Exclude
     private Set<Subgroup> subgroups;
 
     public Category(String title, String url, String description) {

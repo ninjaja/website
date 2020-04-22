@@ -4,21 +4,22 @@
                    xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet author="Dima (generated)" id="1587459116473-1">
+
+    <changeSet author="db_admin" id="1587557086946-1">
         <createTable tableName="category">
             <column autoIncrement="true" name="id" type="SMALLINT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="title" type="CHAR(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="url" type="CHAR(20)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="description" type="CHAR(200)"/>
         </createTable>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-2">
+    <changeSet author="db_admin" id="1587557086946-2">
         <createTable tableName="image">
             <column autoIncrement="true" name="id" type="SMALLINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -27,12 +28,12 @@
                 <constraints nullable="false"/>
             </column>
             <column name="title" type="CHAR(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="data" type="BLOB"/>
         </createTable>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-3">
+    <changeSet author="db_admin" id="1587557086946-3">
         <createTable tableName="project">
             <column autoIncrement="true" name="id" type="SMALLINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -41,15 +42,15 @@
                 <constraints nullable="false"/>
             </column>
             <column name="title" type="CHAR(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="url" type="CHAR(20)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="description" type="CHAR(200)"/>
         </createTable>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-4">
+    <changeSet author="db_admin" id="1587557086946-4">
         <createTable tableName="roles">
             <column autoIncrement="true" name="id" type="TINYINT(3)">
                 <constraints nullable="false" primaryKey="true"/>
@@ -59,7 +60,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-5">
+    <changeSet author="db_admin" id="1587557086946-5">
         <createTable tableName="subgroup">
             <column autoIncrement="true" name="id" type="SMALLINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -68,15 +69,15 @@
                 <constraints nullable="false"/>
             </column>
             <column name="title" type="CHAR(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="url" type="CHAR(20)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="description" type="CHAR(200)"/>
         </createTable>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-6">
+    <changeSet author="db_admin" id="1587557086946-6">
         <createTable tableName="user">
             <column autoIncrement="true" name="id" type="SMALLINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -89,7 +90,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-7">
+    <changeSet author="db_admin" id="1587557086946-7">
         <createTable tableName="user_role">
             <column name="user_id" type="SMALLINT">
                 <constraints nullable="false"/>
@@ -99,44 +100,44 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-8">
+    <changeSet author="db_admin" id="1587557086946-8">
         <createIndex indexName="category_id" tableName="subgroup">
             <column name="category_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-9">
+    <changeSet author="db_admin" id="1587557086946-9">
         <createIndex indexName="project_id" tableName="image">
             <column name="project_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-10">
+    <changeSet author="db_admin" id="1587557086946-10">
         <createIndex indexName="role_id" tableName="user_role">
             <column name="role_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-11">
+    <changeSet author="db_admin" id="1587557086946-11">
         <createIndex indexName="subgroup_id" tableName="project">
             <column name="subgroup_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-12">
+    <changeSet author="db_admin" id="1587557086946-12">
         <createIndex indexName="user_id" tableName="user_role">
             <column name="user_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-13">
+    <changeSet author="db_admin" id="1587557086946-13">
         <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="image" constraintName="image_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="project" validate="true"/>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-14">
+    <changeSet author="db_admin" id="1587557086946-14">
         <addForeignKeyConstraint baseColumnNames="subgroup_id" baseTableName="project" constraintName="project_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="subgroup" validate="true"/>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-15">
+    <changeSet author="db_admin" id="1587557086946-15">
         <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="subgroup" constraintName="subgroup_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="category" validate="true"/>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-16">
+    <changeSet author="db_admin" id="1587557086946-16">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_role" constraintName="user_role_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="user" validate="true"/>
     </changeSet>
-    <changeSet author="Dima (generated)" id="1587459116473-17">
+    <changeSet author="db_admin" id="1587557086946-17">
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_role" constraintName="user_role_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="roles" validate="true"/>
     </changeSet>
 </databaseChangeLog>

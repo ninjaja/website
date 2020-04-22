@@ -35,7 +35,7 @@ public class User {
     private String login;
 
     @NotNull
-    @Size(min = 4, max = 30)
+    @Size(min = 4, max = 255)
     private String password;
 
     @ManyToMany(cascade = CascadeType.MERGE)

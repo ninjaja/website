@@ -1,6 +1,9 @@
 package com.company.website.model;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,22 +22,31 @@ import javax.validation.constraints.Size;
  */
 
 @Entity
-@Data
+@EqualsAndHashCode
+@ToString
 public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private int id;
 
     @NotNull
     @Size(min = 2, max = 30)
+    @Getter
+    @Setter
     private String title;
 
     @Lob
+    @Getter
+    @Setter
     private byte[] data;
 
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @Getter
+    @Setter
     private Project project;
 
     public Image(String title, byte[] data, Project project) {

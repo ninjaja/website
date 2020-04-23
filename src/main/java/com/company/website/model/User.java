@@ -1,7 +1,8 @@
 package com.company.website.model;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.CascadeType;
@@ -23,19 +24,26 @@ import java.util.Set;
  */
 
 @Entity
-@Data
+@EqualsAndHashCode
+@ToString
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private int id;
 
     @NotNull
     @Size(min = 4, max = 30)
+    @Getter
+    @Setter
     private String login;
 
     @NotNull
     @Size(min = 4, max = 255)
+    @Getter
+    @Setter
     private String password;
 
     @ManyToMany(cascade = CascadeType.MERGE)
@@ -43,6 +51,8 @@ public class User {
             name="user_role",
             joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="role_id", referencedColumnName="id")})
+    @Getter
+    @Setter
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Role> roles;

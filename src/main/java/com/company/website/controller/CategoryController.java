@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 /**
@@ -28,31 +30,33 @@ public class CategoryController {
     @Autowired
     SubgroupRepository subgroupRepository;
 
-    // TODO: 22.04.2020 изменить подход с @ModelAttribute
-
-    private Category category;
-
-    @GetMapping("/fromMainController")
-    public String fromMainController(@ModelAttribute("categoryModel") Category category, Model model) {
+    @GetMapping("/category/{categoryUrl}")
+    public String viewCategory(@PathVariable String categoryUrl, Model model) {
+        Category category = categoryRepository.findByUrl(categoryUrl);
         model.addAttribute("category", category);
-        this.category = category;
-        model.addAttribute("subgroups", subgroupRepository.getAllByCategory(category));
-        return "category";
-    }
-
-    @GetMapping("/category")
-    public String category(Model model) {
-        model.addAttribute("category", category);
-        model.addAttribute("subgroups", subgroupRepository.getAllByCategory(category));
+        model.addAttribute("subgroups", subgroupRepository.findAllByCategory(category));
         return "category";
     }
 
     @PostMapping("/addSubgroup")
-    public String add(@Valid Subgroup subgroup, Model model) {
+    public String add(@Valid Subgroup subgroup, @RequestParam Integer categoryId, Model model) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         subgroup.setCategory(category);
         subgroupRepository.save(subgroup);
-        model.addAttribute("subgroups", subgroupRepository.getAllByCategory(category));
-        return "redirect:/category";
+        model.addAttribute("subgroups", subgroupRepository.findAllByCategory(category));
+        return "redirect:/category/" + category.getUrl();
+    }
+
+    @PostMapping("/editCategory")
+    public String editCategory(@Valid Category category, @RequestParam Integer id, Model model) {
+        Category oldCategory = categoryRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        if (!category.equals(oldCategory)) {
+            categoryRepository.save(category);
+            model.addAttribute("category", category);
+            return "redirect:/category/" + category.getUrl();
+        }
+        model.addAttribute("category", oldCategory);
+        return "redirect:/category/" + oldCategory.getUrl();
     }
 
 }

@@ -7,7 +7,36 @@
 </head>
 <body>
 <h1>Welcome! Check out my projects</h1>
+
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Title</th>
+            <th>URL</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${categories.empty}">
+            <td colspan="2"> No categories available</td>
+        </tr>
+        <tr th:each="category : ${categories}">
+            <td><span th:text="${category.id}"> id </span></td>
+            <td><span th:text="${category.title}"> Title </span></td>
+            <td>
+                <a th:href="@{/category/{categoryUrl}(categoryUrl = ${category.url})}">
+                    <span th:text="${category.url}"> URL </span>
+                </a>
+            </td>
+            <td><span th:text="${category.description}"> Description </span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 <div sec:authorize="hasAuthority('ADMIN')">
+    <div><b>Add new category:</b></div>
     <form action="addCategory" method="post">
         <input type="text" name="title" placeholder="Title">
         <input type="text" name="url" placeholder="URL">
@@ -16,32 +45,6 @@
     </form>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
-    </form>
-</div>
-<div>
-    <form th:action="viewCategory" method="post">
-        <table>
-            <thead>
-            <tr>
-                <th>id</th>
-                <th>Title</th>
-                <th>URL</th>
-                <th>Description</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${categories.empty}">
-                <td colspan="2"> No categories available</td>
-            </tr>
-            <tr th:each="category : ${categories}">
-                <td><span th:text="${category.id}"> id </span></td>
-                <td><span th:text="${category.title}"> Title </span></td>
-                <td><span th:text="${category.url}"> URL </span></td>
-                <td><span th:text="${category.description}"> Description </span></td>
-                <td><button type="submit" th:name="name" th:value="${category.title}" >View Category</button></td>
-            </tr>
-            </tbody>
-        </table>
     </form>
 </div>
 

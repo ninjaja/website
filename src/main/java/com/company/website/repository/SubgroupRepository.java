@@ -14,5 +14,7 @@ import java.util.List;
 
 public interface SubgroupRepository extends CrudRepository<Subgroup, Integer> {
 
-    List<Subgroup> getAllByCategory(Category category);
+    List<Subgroup> findAllByCategory(Category category);
+
+    Subgroup findByUrl(String url);
 }

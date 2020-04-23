@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <title th:text="${subgroup.title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1 th:text="${subgroup.title}"></h1>
+<h2 th:text="${subgroup.description}"></h2>
+
+<div sec:authorize="hasAuthority('ADMIN')">
+    <div><b>Edit subgroup:</b></div>
+    <form th:action="@{/editSubgroup}" th:object="${subgroup}" method="post">
+        <input type="text" name="title" th:field="${subgroup.title}">
+        <input type="text" name="url" th:field="${subgroup.url}">
+        <input type="text" name="description" th:field="${subgroup.description}">
+        <input type="hidden" th:name="categoryId" th:value="${category.id}">
+        <input type="hidden" th:name="subgroupId" th:value="${subgroup.id}">
+        <button type="submit">Edit</button>
+    </form>
+</div>
+
+<div>
+    <div><b>Projects:</b></div>
+    <table>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Title</th>
+            <th>URL</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${projects.empty}">
+            <td colspan="2"> No projects available</td>
+        </tr>
+        <tr th:each="project : ${projects}">
+            <td><span th:text="${project.id}"> id </span></td>
+            <td><span th:text="${project.title}"> Title </span></td>
+            <td><span th:text="${project.url}"> URL </span></td>
+            <td><span th:text="${project.description}"> Description </span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div sec:authorize="hasAuthority('ADMIN')">
+    <div><b>Add new project:</b></div>
+    <form th:action="@{/addProject}" method="post">
+        <input type="text" name="title" placeholder="Title">
+        <input type="text" name="url" placeholder="URL">
+        <input type="text" name="description" placeholder="Description">
+        <input type="hidden" th:name="categoryId" th:value="${category.id}">
+        <input type="hidden" th:name="subgroupId" th:value="${subgroup.id}">
+        <button type="submit">Add</button>
+    </form>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
+
+</body>
+</html>

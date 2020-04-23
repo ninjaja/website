@@ -12,4 +12,6 @@ import org.springframework.data.repository.CrudRepository;
 public interface CategoryRepository extends CrudRepository<Category, Integer> {
 
     Category findByTitle(String name);
+
+    Category findByUrl(String url);
 }

@@ -1,6 +1,8 @@
 package com.company.website.model;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
@@ -21,29 +23,43 @@ import java.util.Set;
  */
 
 @Entity
-@Data
+@EqualsAndHashCode
+@ToString
 public class Subgroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private int id;
 
     @NotNull
     @Size(min = 2, max = 30)
+    @Getter
+    @Setter
     private String title;
 
     @NotNull
     @Size(min = 2, max = 30)
+    @Getter
+    @Setter
     private String url;
 
     @Size(max = 300)
+    @Getter
+    @Setter
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @Getter
+    @Setter
     private Category category;
 
     @OneToMany(mappedBy = "subgroup")
+    @Getter
+    @Setter
+    @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Project> projects;
 

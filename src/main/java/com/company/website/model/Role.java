@@ -1,7 +1,8 @@
 package com.company.website.model;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
@@ -22,18 +23,25 @@ import java.util.List;
 
 @Entity
 @Table(name = "roles")
-@Data
+@EqualsAndHashCode
+@ToString
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private int id;
 
     @NotNull
     @Size(min = 2, max = 10)
+    @Getter
+    @Setter
     private String name;
 
     @ManyToMany(mappedBy = "roles")
+    @Getter
+    @Setter
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private List<User> users;

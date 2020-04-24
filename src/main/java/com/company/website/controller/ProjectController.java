@@ -11,13 +11,17 @@ import com.company.website.repository.SubgroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  *
@@ -53,11 +57,22 @@ public class ProjectController {
     }
 
     @PostMapping("/addImage")
-    public String add(@Valid Image image, @RequestParam Integer categoryId, @RequestParam Integer subgroupId, @RequestParam Integer projectId, Model model) {
+    public String add(Image image, @RequestParam("file") MultipartFile file, @RequestParam Integer categoryId, @RequestParam Integer subgroupId, @RequestParam Integer projectId, Model model) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         Subgroup subgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
         Project project = projectRepository.findById(projectId).orElseThrow(EntityNotFoundException::new);
         image.setProject(project);
+
+        if (StringUtils.isEmpty(image.getTitle())) {
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            image.setTitle(fileName);
+        }
+        try {
+            image.setData(file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         imageRepository.save(image);
         model.addAttribute("images", imageRepository.findAllByProject(project));
         return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
@@ -76,5 +91,6 @@ public class ProjectController {
         model.addAttribute("project", oldProject);
         return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + oldProject.getUrl();
     }
+
 
 }

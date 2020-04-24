@@ -58,6 +58,8 @@ public class SubgroupController {
     @PostMapping("/editSubgroup")
     public String editSubgroup(@Valid Subgroup subgroup, @RequestParam Integer categoryId, @RequestParam Integer subgroupId, Model model) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
+        subgroup.setId(subgroupId);
+        subgroup.setCategory(category);
         Subgroup oldSubgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
         if (!subgroup.equals(oldSubgroup)) {
             subgroupRepository.save(subgroup);

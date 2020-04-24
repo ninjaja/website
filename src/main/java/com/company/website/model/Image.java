@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -56,5 +57,10 @@ public class Image {
     }
 
     public Image() {
+    }
+
+    public String generateBase64Image()
+    {
+        return Base64.encodeBase64String(this.getData());
     }
 }

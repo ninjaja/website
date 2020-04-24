@@ -139,5 +139,11 @@
     <changeSet author="db_admin" id="1587557086946-17">
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_role" constraintName="user_role_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="roles" validate="true"/>
     </changeSet>
+    <changeSet author="db_admin" id="1587557086946-18">
+        <modifyDataType columnName="data"
+                        newDataType="MEDIUMBLOB"
+                        schemaName="website"
+                        tableName="image"/>
+    </changeSet>
 
 </databaseChangeLog>

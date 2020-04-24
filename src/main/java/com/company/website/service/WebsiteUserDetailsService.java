@@ -1,4 +1,4 @@
-package com.company.website.security;
+package com.company.website.service;
 
 import com.company.website.model.Role;
 import com.company.website.model.User;

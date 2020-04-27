@@ -30,21 +30,25 @@ public class CategoryController {
     @Autowired
     SubgroupRepository subgroupRepository;
 
+    @PostMapping("/addCategory")
+    public String addCategory(@Valid Category category, Model model) {
+        categoryRepository.save(category);
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "redirect:/";
+    }
+
+    @PostMapping("/removeCategory")
+    public String removeCategory(@RequestParam Integer id) {
+        categoryRepository.deleteById(id);
+        return "redirect:/";
+    }
+
     @GetMapping("/category/{categoryUrl}")
     public String viewCategory(@PathVariable String categoryUrl, Model model) {
         Category category = categoryRepository.findByUrl(categoryUrl);
         model.addAttribute("category", category);
         model.addAttribute("subgroups", subgroupRepository.findAllByCategory(category));
         return "category";
-    }
-
-    @PostMapping("/addSubgroup")
-    public String add(@Valid Subgroup subgroup, @RequestParam Integer categoryId, Model model) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
-        subgroup.setCategory(category);
-        subgroupRepository.save(subgroup);
-        model.addAttribute("subgroups", subgroupRepository.findAllByCategory(category));
-        return "redirect:/category/" + category.getUrl();
     }
 
     @PostMapping("/editCategory")
@@ -58,5 +62,8 @@ public class CategoryController {
         model.addAttribute("category", oldCategory);
         return "redirect:/category/" + oldCategory.getUrl();
     }
+
+
+
 
 }

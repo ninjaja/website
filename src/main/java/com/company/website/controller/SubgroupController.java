@@ -1,7 +1,6 @@
 package com.company.website.controller;
 
 import com.company.website.model.Category;
-import com.company.website.model.Project;
 import com.company.website.model.Subgroup;
 import com.company.website.repository.CategoryRepository;
 import com.company.website.repository.ProjectRepository;
@@ -35,6 +34,22 @@ public class SubgroupController {
     @Autowired
     ProjectRepository projectRepository;
 
+    @PostMapping("/addSubgroup")
+    public String addSubgroup(@Valid Subgroup subgroup, @RequestParam Integer categoryId, Model model) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
+        subgroup.setCategory(category);
+        subgroupRepository.save(subgroup);
+        model.addAttribute("subgroups", subgroupRepository.findAllByCategory(category));
+        return "redirect:/category/" + category.getUrl();
+    }
+
+    @PostMapping("/removeSubgroup")
+    public String removeSubgroup(@RequestParam Integer categoryId, @RequestParam Integer subgroupId) {
+        subgroupRepository.deleteById(subgroupId);
+        Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
+        return "redirect:/category/" + category.getUrl();
+    }
+
     @GetMapping("/category/{categoryUrl}/{subgroupUrl}")
     public String viewSubgroup(@PathVariable String categoryUrl, @PathVariable String subgroupUrl, Model model) {
         Category category = categoryRepository.findByUrl(categoryUrl);
@@ -43,16 +58,6 @@ public class SubgroupController {
         model.addAttribute("subgroup", subgroup);
         model.addAttribute("projects", projectRepository.findAllBySubgroup(subgroup));
         return "subgroup";
-    }
-
-    @PostMapping("/addProject")
-    public String add(@Valid Project project, @RequestParam Integer categoryId, @RequestParam Integer subgroupId, Model model) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
-        Subgroup subgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
-        project.setSubgroup(subgroup);
-        projectRepository.save(project);
-        model.addAttribute("projects", projectRepository.findAllBySubgroup(subgroup));
-        return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl();
     }
 
     @PostMapping("/editSubgroup")
@@ -69,5 +74,7 @@ public class SubgroupController {
         model.addAttribute("subgroup", oldSubgroup);
         return "redirect:/category/" + category.getUrl() + "/" + oldSubgroup.getUrl();
     }
+
+
 
 }

@@ -31,13 +31,21 @@
                 </a>
             </td>
             <td><span th:text="${category.description}"> Description </span></td>
+            <td>
+                <div sec:authorize="hasAuthority('ADMIN')">
+                    <form th:action="@{/removeCategory}" method="post">
+                        <input type="hidden" th:name="id" th:value="${category.id}">
+                        <button type="submit">Remove</button>
+                    </form>
+                </div>
+            </td>
         </tr>
         </tbody>
     </table>
 </div>
 <div sec:authorize="hasAuthority('ADMIN')">
     <div><b>Add new category:</b></div>
-    <form action="addCategory" method="post">
+    <form th:action="addCategory" method="post">
         <input type="text" name="title" placeholder="Title">
         <input type="text" name="url" placeholder="URL">
         <input type="text" name="description" placeholder="Description">

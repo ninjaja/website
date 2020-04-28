@@ -40,7 +40,7 @@
             <td><span th:text="${project.id}"> id </span></td>
             <td><span th:text="${project.title}"> Title </span></td>
             <td>
-                <a th:href="@{/category/{categoryUrl}/{subgroupUrl}/{projectUrl}(categoryUrl = ${category.url}, subgroupUrl = ${subgroup.url}, projectUrl = ${project.url})}">
+                <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}(categoryUrl = ${category.url}, subgroupUrl = ${subgroup.url}, projectUrl = ${project.url})}">
                     <span th:text="${project.url}"> URL </span>
                 </a>
             </td>

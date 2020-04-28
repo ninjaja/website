@@ -1,7 +1,6 @@
 package com.company.website.controller;
 
 import com.company.website.model.Category;
-import com.company.website.model.Subgroup;
 import com.company.website.repository.CategoryRepository;
 import com.company.website.repository.SubgroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class CategoryController {
         return "redirect:/";
     }
 
-    @GetMapping("/category/{categoryUrl}")
+    @GetMapping("/{categoryUrl:^(?!favicon).+}")
     public String viewCategory(@PathVariable String categoryUrl, Model model) {
         Category category = categoryRepository.findByUrl(categoryUrl);
         model.addAttribute("category", category);
@@ -57,10 +56,10 @@ public class CategoryController {
         if (!category.equals(oldCategory)) {
             categoryRepository.save(category);
             model.addAttribute("category", category);
-            return "redirect:/category/" + category.getUrl();
+            return "redirect:/" + category.getUrl();
         }
         model.addAttribute("category", oldCategory);
-        return "redirect:/category/" + oldCategory.getUrl();
+        return "redirect:/" + oldCategory.getUrl();
     }
 
 

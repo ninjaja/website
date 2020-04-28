@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
-    <title th:text="${category.title}"></title>
+    <title th:object="${category}" th:text="${category.title}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
@@ -39,7 +39,7 @@
             <td><span th:text="${subgroup.id}"> id </span></td>
             <td><span th:text="${subgroup.title}"> Title </span></td>
             <td>
-                <a th:href="@{/category/{categoryUrl}/{subgroupUrl}(categoryUrl = ${category.url}, subgroupUrl = ${subgroup.url})}">
+                <a th:href="@{/{categoryUrl}/{subgroupUrl}(categoryUrl = ${category.url}, subgroupUrl = ${subgroup.url})}">
                     <span th:text="${subgroup.url}"> URL </span>
                 </a>
             </td>

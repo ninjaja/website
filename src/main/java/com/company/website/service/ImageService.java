@@ -27,8 +27,8 @@ import java.util.Objects;
 public class ImageService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageService.class);
-    private static final int MAX_DIMENSION = 3000;
-    private static final int MAX_FILE_SIZE = 1024 * 1024;
+    private static final int MAX_DIMENSION = 800;
+    private static final int MAX_FILE_SIZE = (int) (1.5 * 1024 * 1024);
     private static final String GIF = "gif";
 
     public Image processImage(Image image, MultipartFile file, Project project) {
@@ -81,6 +81,5 @@ public class ImageService {
         ImageIO.write(resizedImage, format, baos);
         return baos.toByteArray();
     }
-
 
 }

@@ -62,7 +62,7 @@ public class ProjectController {
             imageRepository.save(image);
         }
         model.addAttribute("projects", projectRepository.findAllBySubgroup(subgroup));
-        return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl();
+        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl();
     }
 
     @PostMapping("/removeProject")
@@ -70,10 +70,10 @@ public class ProjectController {
         projectRepository.deleteById(projectId);
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         Subgroup subgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
-        return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl();
+        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl();
     }
 
-    @GetMapping("/category/{categoryUrl}/{subgroupUrl}/{projectUrl}")
+    @GetMapping("/{categoryUrl}/{subgroupUrl}/{projectUrl}")
     public String viewProject(@PathVariable String categoryUrl, @PathVariable String subgroupUrl, @PathVariable String projectUrl, Model model) {
         Category category = categoryRepository.findByUrl(categoryUrl);
         Subgroup subgroup = subgroupRepository.findByUrl(subgroupUrl);
@@ -93,10 +93,10 @@ public class ProjectController {
         if (!project.equals(oldProject)) {
             projectRepository.save(project);
             model.addAttribute("project", project);
-            return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
+            return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
         }
         model.addAttribute("project", oldProject);
-        return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + oldProject.getUrl();
+        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + oldProject.getUrl();
     }
 
     @PostMapping("/addImage")
@@ -107,7 +107,7 @@ public class ProjectController {
         image = imageService.processImage(image, file, project);
         imageRepository.save(image);
         model.addAttribute("images", imageRepository.findAllByProject(project));
-        return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
+        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
     }
 
     @PostMapping("/removeImage")
@@ -116,7 +116,7 @@ public class ProjectController {
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         Subgroup subgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
         Project project = projectRepository.findById(projectId).orElseThrow(EntityNotFoundException::new);
-        return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
+        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
     }
 
 

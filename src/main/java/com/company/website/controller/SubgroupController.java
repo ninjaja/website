@@ -40,17 +40,17 @@ public class SubgroupController {
         subgroup.setCategory(category);
         subgroupRepository.save(subgroup);
         model.addAttribute("subgroups", subgroupRepository.findAllByCategory(category));
-        return "redirect:/category/" + category.getUrl();
+        return "redirect:/" + category.getUrl();
     }
 
     @PostMapping("/removeSubgroup")
     public String removeSubgroup(@RequestParam Integer categoryId, @RequestParam Integer subgroupId) {
         subgroupRepository.deleteById(subgroupId);
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
-        return "redirect:/category/" + category.getUrl();
+        return "redirect:/" + category.getUrl();
     }
 
-    @GetMapping("/category/{categoryUrl}/{subgroupUrl}")
+    @GetMapping("/{categoryUrl}/{subgroupUrl}")
     public String viewSubgroup(@PathVariable String categoryUrl, @PathVariable String subgroupUrl, Model model) {
         Category category = categoryRepository.findByUrl(categoryUrl);
         Subgroup subgroup = subgroupRepository.findByUrl(subgroupUrl);
@@ -69,10 +69,10 @@ public class SubgroupController {
         if (!subgroup.equals(oldSubgroup)) {
             subgroupRepository.save(subgroup);
             model.addAttribute("subgroup", subgroup);
-            return "redirect:/category/" + category.getUrl() + "/" + subgroup.getUrl();
+            return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl();
         }
         model.addAttribute("subgroup", oldSubgroup);
-        return "redirect:/category/" + category.getUrl() + "/" + oldSubgroup.getUrl();
+        return "redirect:/" + category.getUrl() + "/" + oldSubgroup.getUrl();
     }
 
 

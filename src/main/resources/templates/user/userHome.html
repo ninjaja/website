@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h1>Welcome! Check out my projects</h1>
+
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Title</th>
+            <th>URL</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${categories.empty}">
+            <td colspan="2"> No categories available</td>
+        </tr>
+        <tr th:each="category : ${categories}">
+            <td><span th:text="${category.id}"> id </span></td>
+            <td><span th:text="${category.title}"> Title </span></td>
+            <td>
+                <a th:href="@{/{categoryUrl}(categoryUrl = ${category.url})}">
+                    <span th:text="${category.url}"> URL </span>
+                </a>
+            </td>
+            <td><span th:text="${category.description}"> Description </span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

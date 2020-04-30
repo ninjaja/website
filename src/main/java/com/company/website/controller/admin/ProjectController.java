@@ -1,4 +1,4 @@
-package com.company.website.controller;
+package com.company.website.controller.admin;
 
 import com.company.website.model.Category;
 import com.company.website.model.Image;
@@ -49,8 +49,8 @@ public class ProjectController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectController.class);
 
-    @PostMapping("/addProject")
-    public String add(@Valid Project project, @RequestParam MultipartFile[] files, @RequestParam Integer categoryId, @RequestParam Integer subgroupId, Model model) {
+    @PostMapping("/admin/addProject")
+    public String addProject(@Valid Project project, @RequestParam MultipartFile[] files, @RequestParam Integer categoryId, @RequestParam Integer subgroupId, Model model) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         Subgroup subgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
         project.setSubgroup(subgroup);
@@ -62,18 +62,18 @@ public class ProjectController {
             imageRepository.save(image);
         }
         model.addAttribute("projects", projectRepository.findAllBySubgroup(subgroup));
-        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl();
+        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl();
     }
 
-    @PostMapping("/removeProject")
+    @PostMapping("/admin/removeProject")
     public String removeProject(@RequestParam Integer categoryId, @RequestParam Integer subgroupId, @RequestParam Integer projectId) {
         projectRepository.deleteById(projectId);
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         Subgroup subgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
-        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl();
+        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl();
     }
 
-    @GetMapping("/{categoryUrl}/{subgroupUrl}/{projectUrl}")
+    @GetMapping("/admin/{categoryUrl}/{subgroupUrl}/{projectUrl}")
     public String viewProject(@PathVariable String categoryUrl, @PathVariable String subgroupUrl, @PathVariable String projectUrl, Model model) {
         Category category = categoryRepository.findByUrl(categoryUrl);
         Subgroup subgroup = subgroupRepository.findByUrl(subgroupUrl);
@@ -82,10 +82,10 @@ public class ProjectController {
         model.addAttribute("subgroup", subgroup);
         model.addAttribute("project", project);
         model.addAttribute("images", imageRepository.findAllByProject(project));
-        return "project";
+        return "admin/adminProject";
     }
 
-    @PostMapping("/editProject")
+    @PostMapping("/admin/editProject")
     public String editProject(@Valid Project project, @RequestParam Integer categoryId, @RequestParam Integer subgroupId, @RequestParam Integer projectId, Model model) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         Subgroup subgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
@@ -93,30 +93,30 @@ public class ProjectController {
         if (!project.equals(oldProject)) {
             projectRepository.save(project);
             model.addAttribute("project", project);
-            return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
+            return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
         }
         model.addAttribute("project", oldProject);
-        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + oldProject.getUrl();
+        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + oldProject.getUrl();
     }
 
-    @PostMapping("/addImage")
-    public String add(Image image, @RequestParam("file") MultipartFile file, @RequestParam Integer categoryId, @RequestParam Integer subgroupId, @RequestParam Integer projectId, Model model) {
+    @PostMapping("/admin/addImage")
+    public String addImage(Image image, @RequestParam("file") MultipartFile file, @RequestParam Integer categoryId, @RequestParam Integer subgroupId, @RequestParam Integer projectId, Model model) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         Subgroup subgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
         Project project = projectRepository.findById(projectId).orElseThrow(EntityNotFoundException::new);
         image = imageService.processImage(image, file, project);
         imageRepository.save(image);
         model.addAttribute("images", imageRepository.findAllByProject(project));
-        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
+        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
     }
 
-    @PostMapping("/removeImage")
+    @PostMapping("/admin/removeImage")
     public String removeImage(@RequestParam Integer categoryId, @RequestParam Integer subgroupId, @RequestParam Integer projectId, @RequestParam Integer imageId) {
         imageRepository.deleteById(imageId);
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         Subgroup subgroup = subgroupRepository.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
         Project project = projectRepository.findById(projectId).orElseThrow(EntityNotFoundException::new);
-        return "redirect:/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
+        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
     }
 
 

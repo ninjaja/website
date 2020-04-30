@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <title th:text="${subgroup.title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1 th:text="${subgroup.title}"></h1>
+<h2 th:text="${subgroup.description}"></h2>
+
+<div>
+    <div><b>Projects:</b></div>
+    <table>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Title</th>
+            <th>URL</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${projects.empty}">
+            <td colspan="2"> No projects available</td>
+        </tr>
+        <tr th:each="project : ${projects}">
+            <td><span th:text="${project.id}"> id </span></td>
+            <td><span th:text="${project.title}"> Title </span></td>
+            <td>
+                <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}(categoryUrl = ${category.url}, subgroupUrl = ${subgroup.url}, projectUrl = ${project.url})}">
+                    <span th:text="${project.url}"> URL </span>
+                </a>
+            </td>
+            <td><span th:text="${project.description}"> Description </span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

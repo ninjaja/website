@@ -1,4 +1,4 @@
-package com.company.website.controller;
+package com.company.website.controller.user;
 
 import com.company.website.model.Role;
 import com.company.website.model.User;
@@ -49,6 +49,6 @@ public class RegistrationController {
         user.setRoles(Collections.singleton(role));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "redirect:/login";
+        return "redirect:/";
     }
 }

@@ -36,7 +36,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 @EnableOAuth2Client
-@EnableGlobalMethodSecurity(securedEnabled = true, proxyTargetClass = true)
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -60,7 +60,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-//    @Qualifier("oauth2ClientContext")
     @Autowired
     private OAuth2ClientContext oAuth2ClientContext;
 
@@ -109,16 +108,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()// TODO: 21.04.2020 change this!
                 .authorizeRequests()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/**").permitAll()
-//                    .antMatchers("/adminconsole/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+                .httpBasic();
         http
                 .addFilterBefore(ssoFilter(), UsernamePasswordAuthenticationFilter.class);
     }

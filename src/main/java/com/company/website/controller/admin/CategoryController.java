@@ -1,4 +1,4 @@
-package com.company.website.controller;
+package com.company.website.controller.admin;
 
 import com.company.website.model.Category;
 import com.company.website.repository.CategoryRepository;
@@ -29,37 +29,37 @@ public class CategoryController {
     @Autowired
     SubgroupRepository subgroupRepository;
 
-    @PostMapping("/addCategory")
+    @PostMapping("/admin/addCategory")
     public String addCategory(@Valid Category category, Model model) {
         categoryRepository.save(category);
         model.addAttribute("categories", categoryRepository.findAll());
-        return "redirect:/";
+        return "redirect:/admin";
     }
 
-    @PostMapping("/removeCategory")
+    @PostMapping("/admin/removeCategory")
     public String removeCategory(@RequestParam Integer id) {
         categoryRepository.deleteById(id);
-        return "redirect:/";
+        return "redirect:/admin";
     }
 
-    @GetMapping("/{categoryUrl:^(?!favicon).+}")
+    @GetMapping("/admin/{categoryUrl:^(?!favicon).+}")
     public String viewCategory(@PathVariable String categoryUrl, Model model) {
         Category category = categoryRepository.findByUrl(categoryUrl);
         model.addAttribute("category", category);
         model.addAttribute("subgroups", subgroupRepository.findAllByCategory(category));
-        return "category";
+        return "admin/adminCategory";
     }
 
-    @PostMapping("/editCategory")
+    @PostMapping("/admin/editCategory")
     public String editCategory(@Valid Category category, @RequestParam Integer id, Model model) {
         Category oldCategory = categoryRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         if (!category.equals(oldCategory)) {
             categoryRepository.save(category);
             model.addAttribute("category", category);
-            return "redirect:/" + category.getUrl();
+            return "redirect:/admin/" + category.getUrl();
         }
         model.addAttribute("category", oldCategory);
-        return "redirect:/" + oldCategory.getUrl();
+        return "redirect:/admin/" + oldCategory.getUrl();
     }
 
 

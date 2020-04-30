@@ -1,4 +1,4 @@
-package com.company.website.controller;
+package com.company.website.controller.admin;
 
 import com.company.website.repository.CategoryRepository;
 import com.company.website.repository.SubgroupRepository;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 
 @Controller
-public class MainController {
+public class AdminMainController {
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -22,17 +22,17 @@ public class MainController {
     @Autowired
     SubgroupRepository subgroupRepository;
 
-    @GetMapping("/")
+    @GetMapping("/admin")
     public String greeting(Model model) {
         model.addAttribute("categories", categoryRepository.findAll());
-        return "home";
+        return "admin/adminHome";
     }
 
 
 
-    @GetMapping("/home")
+    @GetMapping("/admin/home")
     public String home() {
-        return "redirect:/";
+        return "redirect:/admin";
     }
 
 }

@@ -32,7 +32,7 @@ public class ImageService {
     private static final String GIF = "gif";
 
     public Image processImage(Image image, MultipartFile file, Project project) {
-        image.setData(processImageData(file));
+        image.setData(processImageData(file)); // TODO: 30.04.2020 saveToStorage
         processImageName(image, file);
         image.setProject(project);
         return image;

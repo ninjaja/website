@@ -1,4 +1,4 @@
-package com.company.website.controller;
+package com.company.website.controller.admin;
 
 import com.company.website.model.Category;
 import com.company.website.model.Subgroup;
@@ -34,30 +34,30 @@ public class SubgroupController {
     @Autowired
     ProjectRepository projectRepository;
 
-    @PostMapping("/addSubgroup")
+    @PostMapping("/admin/addSubgroup")
     public String addSubgroup(@Valid Subgroup subgroup, @RequestParam Integer categoryId, Model model) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
         subgroup.setCategory(category);
         subgroupRepository.save(subgroup);
         model.addAttribute("subgroups", subgroupRepository.findAllByCategory(category));
-        return "redirect:/" + category.getUrl();
+        return "redirect:/admin/" + category.getUrl();
     }
 
-    @PostMapping("/removeSubgroup")
+    @PostMapping("/admin/removeSubgroup")
     public String removeSubgroup(@RequestParam Integer categoryId, @RequestParam Integer subgroupId) {
         subgroupRepository.deleteById(subgroupId);
         Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
-        return "redirect:/" + category.getUrl();
+        return "redirect:/admin/" + category.getUrl();
     }
 
-    @GetMapping("/{categoryUrl}/{subgroupUrl}")
+    @GetMapping("/admin/{categoryUrl}/{subgroupUrl}")
     public String viewSubgroup(@PathVariable String categoryUrl, @PathVariable String subgroupUrl, Model model) {
         Category category = categoryRepository.findByUrl(categoryUrl);
         Subgroup subgroup = subgroupRepository.findByUrl(subgroupUrl);
         model.addAttribute("category", category);
         model.addAttribute("subgroup", subgroup);
         model.addAttribute("projects", projectRepository.findAllBySubgroup(subgroup));
-        return "subgroup";
+        return "admin/adminSubgroup";
     }
 
     @PostMapping("/editSubgroup")
@@ -74,7 +74,5 @@ public class SubgroupController {
         model.addAttribute("subgroup", oldSubgroup);
         return "redirect:/" + category.getUrl() + "/" + oldSubgroup.getUrl();
     }
-
-
 
 }

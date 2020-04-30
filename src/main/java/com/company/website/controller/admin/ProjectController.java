@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *
@@ -81,7 +82,11 @@ public class ProjectController {
         model.addAttribute("category", category);
         model.addAttribute("subgroup", subgroup);
         model.addAttribute("project", project);
-        model.addAttribute("images", imageRepository.findAllByProject(project));
+        List<Image> images = imageRepository.findAllByProject(project);
+        for(Image image : images) {
+            image.setData(ImageService.applyDataToImage(image));
+        }
+        model.addAttribute("images", images);
         return "admin/adminProject";
     }
 

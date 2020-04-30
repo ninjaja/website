@@ -1,6 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="${project.title}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -38,7 +37,7 @@
         <tr th:each="image : ${images}">
             <td><span th:text="${image.id}"> id </span></td>
             <td><span th:text="${image.title}"> Title </span></td>
-            <td><img th:src="@{'data:image/jpeg;base64,' + ${image.generateBase64Image()}}" alt=""/></td>
+            <td><img th:src="@{'data:image/jpeg;base64,' + ${image.data}}" alt=""/></td>
             <td>
                 <div>
                     <form th:action="@{/admin/removeImage}" method="post">

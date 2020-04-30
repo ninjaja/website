@@ -4,15 +4,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -39,10 +38,10 @@ public class Image {
     @Setter
     private String title;
 
-    @Lob
     @Getter
     @Setter
-    private byte[] data;
+    @Transient
+    private String data;
 
     @ManyToOne
     @JoinColumn(name = "project_id")
@@ -50,17 +49,12 @@ public class Image {
     @Setter
     private Project project;
 
-    public Image(String title, byte[] data, Project project) {
+    public Image(String title, Project project) {
         this.title = title;
-        this.data = data;
         this.project = project;
     }
 
     public Image() {
     }
 
-    public String generateBase64Image()
-    {
-        return Base64.encodeBase64String(this.getData());
-    }
 }

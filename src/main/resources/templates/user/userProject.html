@@ -24,7 +24,7 @@
         <tr th:each="image : ${images}">
             <td><span th:text="${image.id}"> id </span></td>
             <td><span th:text="${image.title}"> Title </span></td>
-            <td><img th:src="@{'data:image/jpeg;base64,' + ${image.generateBase64Image()}}" alt=""/></td>
+            <td><img th:src="@{'data:image/jpeg;base64,' + ${image.data}}" alt=""/></td>
         </tr>
         </tbody>
     </table>

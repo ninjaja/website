@@ -29,7 +29,6 @@
             <column name="title" type="CHAR(100)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="data" type="BLOB"/>
         </createTable>
     </changeSet>
     <changeSet author="db_admin" id="1587557086946-3">
@@ -140,10 +139,15 @@
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_role" constraintName="user_role_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="roles" validate="true"/>
     </changeSet>
     <changeSet author="db_admin" id="1587557086946-18">
-        <modifyDataType columnName="data"
-                        newDataType="MEDIUMBLOB"
-                        schemaName="website"
-                        tableName="image"/>
+        <insert tableName="roles">
+            <column name="name" value="ADMIN"/>
+        </insert>
     </changeSet>
+    <changeSet author="db_admin" id="1587557086946-19">
+        <insert tableName="roles">
+            <column name="name" value="USER"/>
+        </insert>
+    </changeSet>
+
 
 </databaseChangeLog>

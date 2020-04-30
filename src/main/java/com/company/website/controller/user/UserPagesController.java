@@ -1,17 +1,21 @@
 package com.company.website.controller.user;
 
 import com.company.website.model.Category;
+import com.company.website.model.Image;
 import com.company.website.model.Project;
 import com.company.website.model.Subgroup;
 import com.company.website.repository.CategoryRepository;
 import com.company.website.repository.ImageRepository;
 import com.company.website.repository.ProjectRepository;
 import com.company.website.repository.SubgroupRepository;
+import com.company.website.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 /**
  *
@@ -20,7 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 
 @Controller
-public class MainController {
+public class UserPagesController {
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -71,7 +75,11 @@ public class MainController {
         model.addAttribute("category", category);
         model.addAttribute("subgroup", subgroup);
         model.addAttribute("project", project);
-        model.addAttribute("images", imageRepository.findAllByProject(project));
+        List<Image> images = imageRepository.findAllByProject(project);
+        for(Image image : images) {
+            image.setData(ImageService.applyDataToImage(image));
+        }
+        model.addAttribute("images", images);
         return "user/userProject";
     }
 

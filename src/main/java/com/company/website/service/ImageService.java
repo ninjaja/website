@@ -3,11 +3,13 @@ package com.company.website.service;
 import com.company.website.exception.CustomException;
 import com.company.website.model.Image;
 import com.company.website.model.Project;
+import com.company.website.repository.ImageRepository;
 import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -37,15 +40,18 @@ public class ImageService {
     private static final String GIF = "gif";
     private static final String STORAGE_PATH = "src/main/resources/images/";
 
+    @Autowired
+    ImageRepository imageRepository;
 
-    public Image processImage(Image image, MultipartFile file, Project project) {
-        image.setTitle(adviceImageName(image, file));
+    public void processImageOnWrite(MultipartFile file, Project project) {
+        Image image = new Image();
+        image.setTitle(adviceImageName(file));
         saveToStorage(image, file, project.getTitle());
         image.setProject(project);
-        return image;
+        imageRepository.save(image);
     }
 
-    public static String applyDataToImage(Image image) {
+    public static String applyDataOnRead(Image image) {
         Path path = Paths.get(STORAGE_PATH + image.getProject().getTitle() + "/" + image.getTitle());
         String output = null;
         try {
@@ -69,6 +75,20 @@ public class ImageService {
         }
     }
 
+    public void removeImage(Integer imageId) {
+        Image image = imageRepository.findById(imageId).orElseThrow(NoSuchElementException::new);
+        String fileName = image.getTitle();
+        String projectName = image.getProject().getTitle();
+        Path path = Paths.get(STORAGE_PATH + projectName + "/" + fileName);
+        try {
+            Files.deleteIfExists(path);
+            imageRepository.deleteById(imageId);
+            LOGGER.info("File: {} was deleted", fileName);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
+
     private byte[] processImageData(MultipartFile file) throws IOException {
         byte[] output = null;
         String format = Objects.requireNonNull(file.getContentType()).split("/")[1];
@@ -85,14 +105,13 @@ public class ImageService {
         return output;
     }
 
-    private String adviceImageName(Image image, MultipartFile file) {
+    private String adviceImageName(MultipartFile file) {
         String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        String result;
-        if (StringUtils.isEmpty(image.getTitle())) {
-            result = originalFileName;
-        } else {
-            String fileExtension = originalFileName.split("\\.")[1];
-            result = image.getTitle() + "." + fileExtension;
+        String name = originalFileName.split("\\.")[0];
+        String fileExtension = originalFileName.split("\\.")[1];
+        String result = originalFileName;
+        if (imageRepository.existsByTitle(originalFileName)) {
+            result = name.concat("1").concat(".").concat(fileExtension);
         }
         return result;
     }

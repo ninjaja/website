@@ -17,4 +17,6 @@ public interface ImageRepository extends CrudRepository<Image, Integer> {
     List<Image> findAllByProject(Project project);
 
     Image findByTitle(String title);
+
+    boolean existsByTitle(String title);
 }

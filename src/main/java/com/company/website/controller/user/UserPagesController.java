@@ -77,7 +77,7 @@ public class UserPagesController {
         model.addAttribute("project", project);
         List<Image> images = imageRepository.findAllByProject(project);
         for(Image image : images) {
-            image.setData(ImageService.applyDataToImage(image));
+            image.setData(ImageService.applyDataOnRead(image));
         }
         model.addAttribute("images", images);
         return "user/userProject";

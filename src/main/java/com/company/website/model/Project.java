@@ -34,18 +34,18 @@ public class Project {
     private int id;
 
     @NotNull
-    @Size(min = 2, max = 30)
+    @Size(min = 2, max = 50)
     @Getter
     @Setter
     private String title;
 
     @NotNull
-    @Size(min = 2, max = 30)
+    @Size(min = 2, max = 50)
     @Getter
     @Setter
     private String url;
 
-    @Size(max = 300)
+    @Size(max = 1000)
     @Getter
     @Setter
     private String description;

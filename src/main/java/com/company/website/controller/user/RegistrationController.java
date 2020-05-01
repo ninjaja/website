@@ -35,7 +35,7 @@ public class RegistrationController {
 
     @GetMapping("/registration")
     public String registration() {
-        return "registration";
+        return "common/registration";
     }
 
     @PostMapping("/registration")
@@ -43,7 +43,7 @@ public class RegistrationController {
         User userFromDb = userRepository.findByLogin(user.getLogin());
         if (Objects.nonNull(userFromDb)) {
             model.addAttribute("message", "Login exists, please select another login");
-            return "registration";
+            return "common/registration";
         }
         Role role = roleRepository.findByName("USER");
         user.setRoles(Collections.singleton(role));

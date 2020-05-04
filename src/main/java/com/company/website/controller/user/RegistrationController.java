@@ -2,9 +2,9 @@ package com.company.website.controller.user;
 
 import com.company.website.model.Role;
 import com.company.website.model.User;
-import com.company.website.repository.RoleRepository;
-import com.company.website.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.company.website.service.RoleService;
+import com.company.website.service.UserService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,18 +20,18 @@ import java.util.Objects;
  * @author Dmitry Matrizaev
  * @since 20.04.2020
  */
-
 @Controller
 public class RegistrationController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
+    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public RegistrationController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/registration")
     public String registration() {
@@ -40,15 +40,17 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(@Valid User user, Model model) {
-        User userFromDb = userRepository.findByLogin(user.getLogin());
+        User userFromDb = userService.findByLogin(user.getLogin()).orElseThrow(() ->
+                new UsernameNotFoundException("Login " + user.getLogin() + " not found"));
         if (Objects.nonNull(userFromDb)) {
             model.addAttribute("message", "Login exists, please select another login");
             return "common/registration";
         }
-        Role role = roleRepository.findByName("USER");
+        Role role = roleService.findByName("USER");
         user.setRoles(Collections.singleton(role));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        userService.save(user);
         return "redirect:/";
     }
+
 }

@@ -11,7 +11,6 @@ import java.util.List;
  * @author Dmitry Matrizaev
  * @since 20.04.2020
  */
-
 public interface SubgroupRepository extends CrudRepository<Subgroup, Integer> {
 
     List<Subgroup> findAllByCategory(Category category);

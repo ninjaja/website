@@ -2,6 +2,7 @@ package com.company.website.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -21,50 +22,37 @@ import java.util.Set;
  * @author Dmitry Matrizaev
  * @since 20.04.2020
  */
-
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
-    @Setter
     private int id;
 
     @NotNull
     @Size(min = 2, max = 50)
-    @Getter
-    @Setter
     private String title;
 
     @NotNull
     @Size(min = 2, max = 50)
-    @Getter
-    @Setter
     private String url;
 
     @Size(max = 1000)
-    @Getter
-    @Setter
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "subgroup_id")
-    @Getter
-    @Setter
     private Subgroup subgroup;
 
     @OneToMany(mappedBy = "project")
-    @Getter
-    @Setter
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Image> images;
-
-    public Project() {
-    }
 
     public Project(String title, String url, String description, Subgroup subgroup) {
         this.title = title;
@@ -72,4 +60,5 @@ public class Project {
         this.description = description;
         this.subgroup = subgroup;
     }
+
 }

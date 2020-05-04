@@ -1,6 +1,6 @@
 package com.company.website.service;
 
-import com.company.website.exception.CustomException;
+import com.company.website.exception.CustomFormatException;
 import com.company.website.model.Image;
 import com.company.website.model.Project;
 import com.company.website.repository.ImageRepository;
@@ -9,7 +9,6 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +22,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -30,7 +30,6 @@ import java.util.Objects;
  * @author Dmitry Matrizaev
  * @since 27.04.2020
  */
-
 @Service
 public class ImageService {
 
@@ -40,8 +39,11 @@ public class ImageService {
     private static final String GIF = "gif";
     private static final String STORAGE_PATH = "src/main/resources/images/";
 
-    @Autowired
-    ImageRepository imageRepository;
+    private final ImageRepository imageRepository;
+
+    public ImageService(ImageRepository imageRepository) {
+        this.imageRepository = imageRepository;
+    }
 
     public void processImageOnWrite(MultipartFile file, Project project) {
         Image image = new Image();
@@ -100,7 +102,7 @@ public class ImageService {
                 output = file.getBytes();
             }
         } else {
-            throw new CustomException("Uploaded file is not an image");
+            throw new CustomFormatException("Uploaded file is not an image");
         }
         return output;
     }
@@ -128,6 +130,10 @@ public class ImageService {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(resizedImage, format, baos);
         return baos.toByteArray();
+    }
+
+    public List<Image> findAllByProject(Project project) {
+        return imageRepository.findAllByProject(project);
     }
 
 }

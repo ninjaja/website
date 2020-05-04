@@ -2,7 +2,7 @@ package com.company.website.config;
 
 import com.company.website.repository.RoleRepository;
 import com.company.website.repository.UserRepository;
-import com.company.website.service.WebsiteUserInfoTokenServices;
+import com.company.website.service.CustomUserInfoTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -32,21 +32,33 @@ import javax.sql.DataSource;
  * @author Dmitry Matrizaev
  * @since 20.04.2020
  */
-
 @Configuration
 @EnableWebSecurity
 @EnableOAuth2Client
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    DataSource dataSource;
+    private final DataSource dataSource;
+    private final UserDetailsService customUserDetailsService;
+    private final OAuth2ClientContext oAuth2ClientContext;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    private UserDetailsService websiteUserDetailsService;
+    public WebSecurityConfig(DataSource dataSource, UserDetailsService customUserDetailsService,
+                             OAuth2ClientContext oAuth2ClientContext, UserRepository userRepository,
+                             RoleRepository roleRepository) {
+        this.dataSource = dataSource;
+        this.customUserDetailsService = customUserDetailsService;
+        this.oAuth2ClientContext = oAuth2ClientContext;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -56,18 +68,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(websiteUserDetailsService)
+                .userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
-
-    @Autowired
-    private OAuth2ClientContext oAuth2ClientContext;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
 
     @Bean
     public FilterRegistrationBean oAuth2ClientFilterRegistration(OAuth2ClientContextFilter oAuth2ClientContextFilter) {
@@ -85,16 +88,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @ConfigurationProperties("security.oauth2.resource")
-    public ResourceServerProperties googleResource()
-    {
+    public ResourceServerProperties googleResource() {
         return new ResourceServerProperties();
     }
 
     private Filter ssoFilter() {
-        OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
+        OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter(
+                "/login/google");
         OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oAuth2ClientContext);
         googleFilter.setRestTemplate(googleTemplate);
-        WebsiteUserInfoTokenServices tokenServices = new WebsiteUserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId());
+        CustomUserInfoTokenService tokenServices =
+                new CustomUserInfoTokenService(googleResource().getUserInfoUri(), google().getClientId());
         tokenServices.setRestTemplate(googleTemplate);
         googleFilter.setTokenServices(tokenServices);
         tokenServices.setUserRepository(userRepository);
@@ -116,4 +120,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .addFilterBefore(ssoFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
 }

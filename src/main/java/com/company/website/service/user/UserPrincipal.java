@@ -1,4 +1,4 @@
-package com.company.website.service;
+package com.company.website.service.user;
 
 import lombok.Getter;
 import lombok.Setter;

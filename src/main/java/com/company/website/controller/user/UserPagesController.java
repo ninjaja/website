@@ -1,9 +1,8 @@
 package com.company.website.controller.user;
 
-import com.company.website.model.Category;
-import com.company.website.model.Image;
-import com.company.website.model.Project;
-import com.company.website.model.Subgroup;
+import com.company.website.dto.CategoryDTO;
+import com.company.website.dto.ProjectDTO;
+import com.company.website.dto.SubgroupDTO;
 import com.company.website.service.CategoryService;
 import com.company.website.service.ImageService;
 import com.company.website.service.ProjectService;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
 
 /**
  * @author Dmitry Matrizaev
@@ -36,7 +33,7 @@ public class UserPagesController {
     }
 
     @GetMapping("/")
-    public String greeting(Model model) {
+    public String greeting(final Model model) {
         model.addAttribute("categories", categoryService.findAll());
         return "user/userHome";
     }
@@ -47,17 +44,18 @@ public class UserPagesController {
     }
 
     @GetMapping("/{categoryUrl:^(?!favicon).+}")
-    public String viewCategory(@PathVariable String categoryUrl, Model model) {
-        Category category = categoryService.findByUrl(categoryUrl);
+    public String viewCategory(@PathVariable final String categoryUrl, final Model model) {
+        CategoryDTO category = categoryService.findByUrl(categoryUrl);
         model.addAttribute("category", category);
         model.addAttribute("subgroups", subgroupService.findAllByCategory(category));
         return "user/userCategory";
     }
 
     @GetMapping("/{categoryUrl}/{subgroupUrl}")
-    public String viewSubgroup(@PathVariable String categoryUrl, @PathVariable String subgroupUrl, Model model) {
-        Category category = categoryService.findByUrl(categoryUrl);
-        Subgroup subgroup = subgroupService.findByUrl(subgroupUrl);
+    public String viewSubgroup(@PathVariable final String categoryUrl, @PathVariable final String subgroupUrl,
+                               final Model model) {
+        CategoryDTO category = categoryService.findByUrl(categoryUrl);
+        SubgroupDTO subgroup = subgroupService.findByUrl(subgroupUrl);
         model.addAttribute("category", category);
         model.addAttribute("subgroup", subgroup);
         model.addAttribute("projects", projectService.findAllBySubgroup(subgroup));
@@ -65,19 +63,15 @@ public class UserPagesController {
     }
 
     @GetMapping("/{categoryUrl}/{subgroupUrl}/{projectUrl}")
-    public String viewProject(@PathVariable String categoryUrl, @PathVariable String subgroupUrl,
-                              @PathVariable String projectUrl, Model model) {
-        Category category = categoryService.findByUrl(categoryUrl);
-        Subgroup subgroup = subgroupService.findByUrl(subgroupUrl);
-        Project project = projectService.findByUrl(projectUrl);
+    public String viewProject(@PathVariable final String categoryUrl, @PathVariable final String subgroupUrl,
+                              @PathVariable final String projectUrl, final Model model) {
+        CategoryDTO category = categoryService.findByUrl(categoryUrl);
+        SubgroupDTO subgroup = subgroupService.findByUrl(subgroupUrl);
+        ProjectDTO project = projectService.findByUrl(projectUrl);
         model.addAttribute("category", category);
         model.addAttribute("subgroup", subgroup);
         model.addAttribute("project", project);
-        List<Image> images = imageService.findAllByProject(project);
-        for (Image image : images) {
-            image.setData(ImageService.applyDataOnRead(image));
-        }
-        model.addAttribute("images", images);
+        model.addAttribute("images", imageService.serveImagesOnRead(project));
         return "user/userProject";
     }
 

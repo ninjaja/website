@@ -1,7 +1,6 @@
 package com.company.website.repository;
 
 import com.company.website.model.Project;
-import com.company.website.model.Subgroup;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -13,7 +12,12 @@ import java.util.List;
  */
 public interface ProjectRepository extends CrudRepository<Project, Integer> {
 
-    List<Project> findAllBySubgroup(Subgroup subgroup);
+    List<Project> findAllBySubgroupTitle(String subgroupTitle);
+
+    Project findByTitle(String title);
 
     Project findByUrl(String projectUrl);
+
+    void removeByTitle(String title);
+
 }

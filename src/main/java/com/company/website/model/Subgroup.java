@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
 /**
@@ -35,14 +34,11 @@ public class Subgroup {
     private int id;
 
     @NotNull
-    @Size(min = 2, max = 50)
     private String title;
 
     @NotNull
-    @Size(min = 2, max = 50)
     private String url;
 
-    @Size(max = 1000)
     private String description;
 
     @ManyToOne

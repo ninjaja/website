@@ -1,8 +1,9 @@
-package com.company.website.service;
+package com.company.website.service.user;
 
 import com.company.website.model.Role;
 import com.company.website.model.User;
 import com.company.website.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,13 +21,10 @@ import java.util.List;
  */
 @Service
 @Transactional
+@AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {

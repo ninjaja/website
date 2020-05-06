@@ -1,43 +1,49 @@
 package com.company.website.service;
 
+import com.company.website.dto.ProjectDTO;
+import com.company.website.dto.SubgroupDTO;
 import com.company.website.model.Project;
-import com.company.website.model.Subgroup;
 import com.company.website.repository.ProjectRepository;
+import com.company.website.repository.SubgroupRepository;
+import com.company.website.service.mapping.ProjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import javax.transaction.Transactional;
+import java.util.stream.Collectors;
 
 /**
  * @author Dmitry Matrizaev
  * @since 04.05.2020
  */
 @Service
+@Transactional
+@AllArgsConstructor
 public class ProjectService {
 
-    private final ProjectRepository repository;
+    private final ProjectRepository projectRepository;
+    private final SubgroupRepository subgroupRepository;
+    private final ProjectMapper projectMapper;
 
-    public ProjectService(ProjectRepository repository) {
-        this.repository = repository;
+    public Iterable<ProjectDTO> findAllBySubgroup(SubgroupDTO subgroup) {
+        return projectRepository.findAllBySubgroupTitle(subgroup.getTitle()).stream()
+                .map(projectMapper::map)
+                .collect(Collectors.toList());
     }
 
-    public Iterable<Project> findAllBySubgroup(Subgroup subgroup) {
-        return repository.findAllBySubgroup(subgroup);
+    public void save(ProjectDTO projectDTO, SubgroupDTO subgroupDTO) {
+        Project project = projectRepository.findById(projectDTO.getId()).orElseGet(Project::new);
+        project = projectMapper.copyFromDto(projectDTO, project);
+        project.setSubgroup(subgroupRepository.findByTitle(subgroupDTO.getTitle()));
+        projectRepository.save(project);
     }
 
-    public Project save(Project project) {
-        return repository.save(project);
+    public void deleteByTitle(String title) {
+        projectRepository.removeByTitle(title);
     }
 
-    public void deleteById(Integer id) {
-        repository.deleteById(id);
-    }
-
-    public Project findByUrl(String url) {
-        return repository.findByUrl(url);
-    }
-
-    public Optional<Project> findById(Integer id) {
-        return repository.findById(id);
+    public ProjectDTO findByUrl(String url) {
+        return projectMapper.map(projectRepository.findByUrl(url));
     }
 
 }

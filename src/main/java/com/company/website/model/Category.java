@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
 /**
@@ -33,17 +33,14 @@ public class Category {
     private int id;
 
     @NotNull
-    @Size(min = 2, max = 50)
     private String title;
 
     @NotNull
-    @Size(min = 2, max = 50)
     private String url;
 
-    @Size(max = 1000)
     private String description;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Subgroup> subgroups;

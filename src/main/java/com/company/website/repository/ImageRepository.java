@@ -1,7 +1,6 @@
 package com.company.website.repository;
 
 import com.company.website.model.Image;
-import com.company.website.model.Project;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -13,9 +12,12 @@ import java.util.List;
  */
 public interface ImageRepository extends CrudRepository<Image, Integer> {
 
-    List<Image> findAllByProject(Project project);
+    List<Image> findAllByProjectTitle(String projectTitle);
 
     Image findByTitle(String title);
 
     boolean existsByTitle(String title);
+
+    void deleteByTitle(String title);
+
 }

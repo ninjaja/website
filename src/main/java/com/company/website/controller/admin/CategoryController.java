@@ -1,6 +1,7 @@
 package com.company.website.controller.admin;
 
-import com.company.website.model.Category;
+import com.company.website.dto.CategoryDTO;
+import com.company.website.dto.SubgroupDTO;
 import com.company.website.service.CategoryService;
 import com.company.website.service.SubgroupService;
 import org.springframework.stereotype.Controller;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 /**
@@ -21,6 +21,8 @@ import javax.validation.Valid;
 @Controller
 public class CategoryController {
 
+    private static final String REDIRECT = "redirect:/admin/%s";
+
     private final CategoryService categoryService;
     private final SubgroupService subgroupService;
 
@@ -29,37 +31,34 @@ public class CategoryController {
         this.subgroupService = subgroupService;
     }
 
-    @PostMapping("/admin/addCategory")
-    public String addCategory(@Valid Category category, Model model) {
-        categoryService.save(category);
-        model.addAttribute("categories", categoryService.findAll());
-        return "redirect:/admin";
-    }
-
-    @PostMapping("/admin/removeCategory")
-    public String removeCategory(@RequestParam Integer id) {
-        categoryService.deleteById(id);
-        return "redirect:/admin";
-    }
-
     @GetMapping("/admin/{categoryUrl:^(?!favicon).+}")
-    public String viewCategory(@PathVariable String categoryUrl, Model model) {
-        Category category = categoryService.findByUrl(categoryUrl);
+    public String viewCategory(@PathVariable final String categoryUrl, final Model model) {
+        final CategoryDTO category = categoryService.findByUrl(categoryUrl);
         model.addAttribute("category", category);
         model.addAttribute("subgroups", subgroupService.findAllByCategory(category));
         return "admin/adminCategory";
     }
 
     @PostMapping("/admin/editCategory")
-    public String editCategory(@Valid Category category, @RequestParam Integer id, Model model) {
-        Category oldCategory = categoryService.findById(id).orElseThrow(EntityNotFoundException::new);
-        if (!category.equals(oldCategory)) {
-            categoryService.save(category);
-            model.addAttribute("category", category);
-            return "redirect:/admin/" + category.getUrl();
-        }
-        model.addAttribute("category", oldCategory);
-        return "redirect:/admin/" + oldCategory.getUrl();
+    public String editCategory(@Valid final CategoryDTO category, final Model model) {
+        categoryService.save(category);
+        model.addAttribute("category", category);
+        return String.format(REDIRECT, category.getUrl());
+    }
+
+    @PostMapping("/admin/addSubgroup")
+    public String addSubgroup(@Valid final SubgroupDTO subgroup, @RequestParam final String categoryUrl,
+                              final Model model) {
+        final CategoryDTO category = categoryService.findByUrl(categoryUrl);
+        subgroupService.save(subgroup, category);
+        model.addAttribute("subgroups", subgroupService.findAllByCategory(category));
+        return String.format(REDIRECT, categoryUrl);
+    }
+
+    @PostMapping("/admin/removeSubgroup")
+    public String removeSubgroup(@RequestParam final String categoryUrl, @RequestParam final String subgroupUrl) {
+        subgroupService.deleteByUrl(subgroupUrl);
+        return String.format(REDIRECT, categoryUrl);
     }
 
 }

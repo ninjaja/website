@@ -2,7 +2,7 @@ package com.company.website.config;
 
 import com.company.website.repository.RoleRepository;
 import com.company.website.repository.UserRepository;
-import com.company.website.service.CustomUserInfoTokenService;
+import com.company.website.service.user.CustomUserInfoTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;

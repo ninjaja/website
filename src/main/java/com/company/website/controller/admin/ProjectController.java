@@ -1,9 +1,8 @@
 package com.company.website.controller.admin;
 
-import com.company.website.model.Category;
-import com.company.website.model.Image;
-import com.company.website.model.Project;
-import com.company.website.model.Subgroup;
+import com.company.website.dto.CategoryDTO;
+import com.company.website.dto.ProjectDTO;
+import com.company.website.dto.SubgroupDTO;
 import com.company.website.service.CategoryService;
 import com.company.website.service.ImageService;
 import com.company.website.service.ProjectService;
@@ -16,9 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author Dmitry Matrizaev
@@ -26,6 +23,8 @@ import java.util.List;
  */
 @Controller
 public class ProjectController {
+
+    private static final String REDIRECT_PROJECT = "redirect:/admin/%s/%s/%s";
 
     private final CategoryService categoryService;
     private final SubgroupService subgroupService;
@@ -40,84 +39,44 @@ public class ProjectController {
         this.imageService = imageService;
     }
 
-    @PostMapping("/admin/addProject")
-    public String addProject(@Valid Project project, @RequestParam MultipartFile[] files,
-                             @RequestParam Integer categoryId, @RequestParam Integer subgroupId, Model model) {
-        Category category = categoryService.findById(categoryId).orElseThrow(EntityNotFoundException::new);
-        Subgroup subgroup = subgroupService.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
-        project.setSubgroup(subgroup);
-        project = projectService.save(project);
-        for (MultipartFile file : files) {
-            imageService.processImageOnWrite(file, project);
-        }
-        model.addAttribute("projects", projectService.findAllBySubgroup(subgroup));
-        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl();
-    }
-
-    @PostMapping("/admin/removeProject")
-    public String removeProject(@RequestParam Integer categoryId, @RequestParam Integer subgroupId,
-                                @RequestParam Integer projectId) {
-        projectService.deleteById(projectId);
-        Category category = categoryService.findById(categoryId).orElseThrow(EntityNotFoundException::new);
-        Subgroup subgroup = subgroupService.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
-        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl();
-    }
-
     @GetMapping("/admin/{categoryUrl}/{subgroupUrl}/{projectUrl}")
-    public String viewProject(@PathVariable String categoryUrl, @PathVariable String subgroupUrl,
-                              @PathVariable String projectUrl, Model model) {
-        Category category = categoryService.findByUrl(categoryUrl);
-        Subgroup subgroup = subgroupService.findByUrl(subgroupUrl);
-        Project project = projectService.findByUrl(projectUrl);
+    public String viewProject(@PathVariable final String categoryUrl, @PathVariable final String subgroupUrl,
+                              @PathVariable final String projectUrl, final Model model) {
+        final CategoryDTO category = categoryService.findByUrl(categoryUrl);
+        final SubgroupDTO subgroup = subgroupService.findByUrl(subgroupUrl);
+        final ProjectDTO project = projectService.findByUrl(projectUrl);
         model.addAttribute("category", category);
         model.addAttribute("subgroup", subgroup);
         model.addAttribute("project", project);
-        List<Image> images = imageService.findAllByProject(project);
-        for (Image image : images) {
-            image.setData(ImageService.applyDataOnRead(image));
-        }
-        model.addAttribute("images", images);
+        model.addAttribute("images", imageService.serveImagesOnRead(project));
         return "admin/adminProject";
     }
 
     @PostMapping("/admin/editProject")
-    public String editProject(@Valid Project project, @RequestParam Integer categoryId,
-                              @RequestParam Integer subgroupId, @RequestParam Integer projectId, Model model) {
-        Category category = categoryService.findById(categoryId).orElseThrow(EntityNotFoundException::new);
-        Subgroup subgroup = subgroupService.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
-        project.setId(projectId);
-        project.setSubgroup(subgroup);
-        Project oldProject = projectService.findById(projectId).orElseThrow(EntityNotFoundException::new);
-        if (!project.equals(oldProject)) {
-            projectService.save(project);
-            model.addAttribute("project", project);
-            return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
-        }
-        model.addAttribute("project", oldProject);
-        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + oldProject.getUrl();
+    public String editProject(@Valid final ProjectDTO project, @RequestParam final String categoryUrl,
+                              @RequestParam final String subgroupUrl, final Model model) {
+        final SubgroupDTO subgroup = subgroupService.findByUrl(subgroupUrl);
+        projectService.save(project, subgroup);
+        model.addAttribute("project", project);
+        return String.format(REDIRECT_PROJECT, categoryUrl, subgroupUrl, project.getUrl());
     }
 
     @PostMapping("/admin/addImages")
-    public String addImages(@RequestParam("files") MultipartFile[] files, @RequestParam Integer categoryId,
-                            @RequestParam Integer subgroupId, @RequestParam Integer projectId, Model model) {
-        Category category = categoryService.findById(categoryId).orElseThrow(EntityNotFoundException::new);
-        Subgroup subgroup = subgroupService.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
-        Project project = projectService.findById(projectId).orElseThrow(EntityNotFoundException::new);
-        for (MultipartFile file : files) {
-            imageService.processImageOnWrite(file, project);
-        }
+    public String addImages(@RequestParam("files") final MultipartFile[] files, @RequestParam final String categoryUrl,
+                            @RequestParam final String subgroupUrl, @RequestParam final String projectUrl,
+                            final Model model) {
+        final ProjectDTO project = projectService.findByUrl(projectUrl);
+        imageService.processImagesOnWrite(files, project);
         model.addAttribute("images", imageService.findAllByProject(project));
-        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
+        return String.format(REDIRECT_PROJECT, categoryUrl, subgroupUrl, projectUrl);
     }
 
     @PostMapping("/admin/removeImage")
-    public String removeImage(@RequestParam Integer categoryId, @RequestParam Integer subgroupId,
-                              @RequestParam Integer projectId, @RequestParam Integer imageId) {
-        imageService.removeImage(imageId);
-        Category category = categoryService.findById(categoryId).orElseThrow(EntityNotFoundException::new);
-        Subgroup subgroup = subgroupService.findById(subgroupId).orElseThrow(EntityNotFoundException::new);
-        Project project = projectService.findById(projectId).orElseThrow(EntityNotFoundException::new);
-        return "redirect:/admin/" + category.getUrl() + "/" + subgroup.getUrl() + "/" + project.getUrl();
+    public String removeImage(@RequestParam final String categoryUrl,
+                              @RequestParam final String subgroupUrl, @RequestParam final String projectUrl,
+                              @RequestParam final String imageTitle) {
+        imageService.removeImage(imageTitle);
+        return String.format(REDIRECT_PROJECT, categoryUrl, subgroupUrl, projectUrl);
     }
 
 }

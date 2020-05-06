@@ -1,9 +1,10 @@
-package com.company.website.service;
+package com.company.website.service.user;
 
 import com.company.website.model.Role;
 import com.company.website.model.User;
 import com.company.website.repository.RoleRepository;
 import com.company.website.repository.UserRepository;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.FixedPrincipalExtractor;
@@ -33,21 +34,19 @@ import java.util.Objects;
  * @author Dmitry Matrizaev
  * @since 28.04.2020
  */
+@NoArgsConstructor
 public class CustomUserInfoTokenService implements ResourceServerTokenServices {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(CustomUserInfoTokenService.class);
+
     private String userInfoEndpointUrl;
     private String clientId;
     private OAuth2RestOperations restTemplate;
     private String tokenType = "Bearer";
     private PrincipalExtractor principalExtractor = new FixedPrincipalExtractor();
-
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
-
-    public CustomUserInfoTokenService() {
-    }
 
     public CustomUserInfoTokenService(String userInfoEndpointUrl, String clientId) {
         this.userInfoEndpointUrl = userInfoEndpointUrl;

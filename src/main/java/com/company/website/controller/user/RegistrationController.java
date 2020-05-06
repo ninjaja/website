@@ -1,9 +1,10 @@
 package com.company.website.controller.user;
 
-import com.company.website.model.Role;
+import com.company.website.dto.RoleDTO;
+import com.company.website.dto.UserDTO;
 import com.company.website.model.User;
-import com.company.website.service.RoleService;
-import com.company.website.service.UserService;
+import com.company.website.service.user.RoleService;
+import com.company.website.service.user.UserService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -39,14 +40,14 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String addUser(@Valid User user, Model model) {
+    public String addUser(@Valid UserDTO user, Model model) {
         User userFromDb = userService.findByLogin(user.getLogin()).orElseThrow(() ->
                 new UsernameNotFoundException("Login " + user.getLogin() + " not found"));
         if (Objects.nonNull(userFromDb)) {
             model.addAttribute("message", "Login exists, please select another login");
             return "common/registration";
         }
-        Role role = roleService.findByName("USER");
+        RoleDTO role = roleService.findByName("USER");
         user.setRoles(Collections.singleton(role));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.save(user);

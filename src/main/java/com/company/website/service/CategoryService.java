@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -25,7 +26,7 @@ public class CategoryService {
     private final CategoryRepository repository;
     private final CategoryMapper mapper;
 
-    public Iterable<CategoryDTO> findAll() {
+    public List<CategoryDTO> findAll() {
         return StreamSupport.stream(repository.findAll().spliterator(), false)
                 .map(mapper::map)
                 .collect(Collectors.toList());

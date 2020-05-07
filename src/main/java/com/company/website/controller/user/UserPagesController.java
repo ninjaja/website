@@ -7,6 +7,7 @@ import com.company.website.service.CategoryService;
 import com.company.website.service.ImageService;
 import com.company.website.service.ProjectService;
 import com.company.website.service.SubgroupService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,20 +18,13 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @since 20.04.2020
  */
 @Controller
+@AllArgsConstructor
 public class UserPagesController {
 
     private final CategoryService categoryService;
     private final SubgroupService subgroupService;
     private final ProjectService projectService;
     private final ImageService imageService;
-
-    public UserPagesController(CategoryService categoryService, SubgroupService subgroupService,
-                               ProjectService projectService, ImageService imageService) {
-        this.categoryService = categoryService;
-        this.subgroupService = subgroupService;
-        this.projectService = projectService;
-        this.imageService = imageService;
-    }
 
     @GetMapping("/")
     public String greeting(final Model model) {

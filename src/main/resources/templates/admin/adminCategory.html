@@ -1,20 +1,29 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:object="${category}" th:text="${category.title}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:object="${categoryDTO}" th:text="*{title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<h1 th:text="${category.title}"></h1>
-<h2 th:text="${category.description}"></h2>
+<h1 th:text="${categoryDTO.title}"></h1>
+<h2 th:text="${categoryDTO.description}"></h2>
 
 <div>
     <div><b>Edit category:</b></div>
-    <form th:action="@{/admin/editCategory}" th:object="${category}" method="post">
-        <input type="text" name="title" th:field="${category.title}">
-        <input type="text" name="url" th:field="${category.url}">
-        <input type="text" name="description" th:field="${category.description}">
-        <input type="hidden" name="id" th:field="${category.id}">
+    <form th:action="@{/admin/editCategory}" th:object="${categoryDTO}" method="post">
+        <div>
+            <label>Title <input type="text" th:name="title" th:value="*{title}"></label>
+            <label th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></label>
+        </div>
+        <div>
+            <label>URL <input type="text" th:name="url" th:value="*{url}"></label>
+            <label th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></label>
+        </div>
+        <div>
+            <label>Description <input type="text" th:name="description" th:value="*{description}"></label>
+            <label th:if="${#fields.hasErrors('title')}" th:errors="*{description}"></label>
+        </div>
+        <input type="hidden" name="id" th:field="*{id}">
         <button type="submit">Edit</button>
     </form>
 </div>
@@ -30,23 +39,23 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:if="${subgroups.empty}">
+        <tr th:if="${#lists.isEmpty(subgroups)}">
             <td colspan="2"> No subgroups available</td>
         </tr>
-        <tr th:each="subgroup : ${subgroups}">
-            <td><span th:text="${subgroup.title}"> Title </span></td>
+        <tr th:each="subgroupDTO : ${subgroups}">
+            <td><span th:text="${subgroupDTO.title}"> Title </span></td>
             <td>
-                <a th:href="@{/admin/{categoryUrl}/{subgroupUrl}(categoryUrl = ${category.url},
-                        subgroupUrl = ${subgroup.url})}">
-                    <span th:text="${subgroup.url}"> URL </span>
+                <a th:href="@{/admin/{categoryUrl}/{subgroupUrl}(categoryUrl = ${categoryDTO.url},
+                        subgroupUrl = ${subgroupDTO.url})}">
+                    <span th:text="${subgroupDTO.url}"> URL </span>
                 </a>
             </td>
-            <td><span th:text="${subgroup.description}"> Description </span></td>
+            <td><span th:text="${subgroupDTO.description}"> Description </span></td>
             <td>
                 <div>
                     <form th:action="@{/admin/removeSubgroup}" method="post">
-                        <input type="hidden" th:name="categoryUrl" th:value="${category.url}">
-                        <input type="hidden" th:name="subgroupUrl" th:value="${subgroup.url}">
+                        <input type="hidden" th:name="categoryUrl" th:value="${categoryDTO.url}">
+                        <input type="hidden" th:name="subgroupUrl" th:value="${subgroupDTO.url}">
                         <button type="submit">Remove</button>
                     </form>
                 </div>
@@ -57,11 +66,20 @@
 </div>
 <div>
     <div><b>Add new subgroup:</b></div>
-    <form th:action="@{/admin/addSubgroup}" method="post">
-        <input type="text" name="title" placeholder="Title">
-        <input type="text" name="url" placeholder="URL">
-        <input type="text" name="description" placeholder="Description">
-        <input type="hidden" th:name="categoryUrl" th:value="${category.url}">
+    <form th:action="@{/admin/addSubgroup}" th:object="${subgroupDTO}" method="post">
+        <div>
+            <label>Title <input type="text" th:name="title" th:value="*{title}"></label>
+            <label th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></label>
+        </div>
+        <div>
+            <label>URL <input type="text" th:name="url" th:value="*{url}"></label>
+            <label th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></label>
+        </div>
+        <div>
+            <label>Description <input type="text" th:name="description" th:value="*{description}"></label>
+            <label th:if="${#fields.hasErrors('title')}" th:errors="*{description}"></label>
+        </div>
+        <input type="hidden" th:name="categoryUrl" th:value="${categoryDTO.url}">
         <button type="submit">Add</button>
     </form>
 </div>

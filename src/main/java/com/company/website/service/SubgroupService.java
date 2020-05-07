@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -25,7 +26,7 @@ public class SubgroupService {
     private final CategoryRepository categoryRepository;
     private final SubgroupMapper subgroupMapper;
 
-    public Iterable<SubgroupDTO> findAllByCategory(CategoryDTO category) {
+    public List<SubgroupDTO> findAllByCategory(CategoryDTO category) {
         return subgroupRepository.findAllByCategoryTitle(category.getTitle()).stream()
                 .map(subgroupMapper::map)
                 .collect(Collectors.toList());

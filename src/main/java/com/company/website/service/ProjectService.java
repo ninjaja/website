@@ -9,6 +9,7 @@ import com.company.website.service.mapping.ProjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,17 @@ public class ProjectService {
 
     public ProjectDTO findByUrl(String url) {
         return projectMapper.map(projectRepository.findByUrl(url));
+    }
+
+    public ProjectDTO findById(Integer id) {
+        return projectMapper.map(projectRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+    }
+
+    public void copyOnError(final ProjectDTO projectDTO) {
+        final ProjectDTO oldProjectDTO = findById(projectDTO.getId());
+        projectDTO.setTitle(oldProjectDTO.getTitle());
+        projectDTO.setUrl(oldProjectDTO.getUrl());
+        projectDTO.setDescription(oldProjectDTO.getDescription());
     }
 
 }

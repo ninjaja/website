@@ -10,11 +10,18 @@ import java.util.List;
  * @author Dmitry Matrizaev
  * @since 20.04.2020
  */
-public interface ProjectRepository extends CrudRepository<Project, Integer> {
+public interface ProjectRepository extends CrudRepository<Project, Integer>, CustomRepository {
+
+    @Override
+    Project findByTitle(String title);
+
+    @Override
+    boolean existsByTitle(String title);
+
+    @Override
+    boolean existsByUrl(String url);
 
     List<Project> findAllBySubgroupTitle(String subgroupTitle);
-
-    Project findByTitle(String title);
 
     Project findByUrl(String projectUrl);
 

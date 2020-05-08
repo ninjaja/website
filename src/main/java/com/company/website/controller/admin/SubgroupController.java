@@ -52,6 +52,7 @@ public class SubgroupController {
         CategoryDTO categoryDTO;
         if (result.hasErrors()) {
             categoryDTO = categoryService.findByUrl(categoryUrl);
+            subgroupService.copyOnError(subgroupDTO);
             return serveSubgroupPage(categoryDTO, subgroupDTO, projectDTO, model);
         }
         categoryDTO = categoryService.findByUrl(categoryUrl);

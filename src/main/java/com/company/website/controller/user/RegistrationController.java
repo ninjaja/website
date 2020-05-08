@@ -28,14 +28,15 @@ public class RegistrationController {
     private final UsernameValidator validator;
 
     @GetMapping("/registration")
-    public String registration() {
+    public String registration(final UserDTO userDTO, final Model model) {
+        model.addAttribute("userDTO", userDTO);
         return "common/registration";
     }
 
     @PostMapping("/registration")
     public String addUser(@Valid final UserDTO userDTO, final BindingResult result, final Model model) {
-        validator.validate(userDTO, result);
         model.addAttribute("userDTO", userDTO);
+        validator.validate(userDTO, result);
         if (result.hasErrors()) {
             return "common/registration";
         }

@@ -48,6 +48,7 @@ public class ProjectController {
                               @RequestParam final String categoryUrl,
                               @RequestParam final String subgroupUrl, final Model model) {
         if(result.hasErrors()) {
+            projectService.copyOnError(projectDTO);
             return serveProjectPage(categoryUrl, subgroupUrl, projectDTO, imageDTO, model);
         }
         final SubgroupDTO subgroupDTO = subgroupService.findByUrl(subgroupUrl);

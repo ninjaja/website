@@ -1,5 +1,7 @@
 package com.company.website.dto;
 
+import com.company.website.validation.title.UniqueTitle;
+import com.company.website.validation.url.UniqueURL;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +17,9 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CategoryDTO {
+@UniqueTitle
+@UniqueURL
+public class CategoryDTO implements EntityDTO {
 
     private int id;
 

@@ -41,6 +41,7 @@ public class CategoryController {
     public String editCategory(@Valid final CategoryDTO categoryDTO, final BindingResult result,
                                final SubgroupDTO subgroupDTO, final Model model) {
         if (result.hasErrors()) {
+            categoryService.copyOnError(categoryDTO);
             return serveCategoryPage(categoryDTO, subgroupDTO, model);
         }
         categoryService.save(categoryDTO);

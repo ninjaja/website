@@ -10,7 +10,9 @@
         <div>
             <label> Username: <input type="text" th:name="login" th:value="*{login}"/></label>
             <label> Password: <input type="password" th:name="password" th:value="*{password}"/> </label>
-            <label th:if="${#fields.hasErrors('all')}" th:errors="*{login}"></label>
+            <div th:if="${#fields.hasErrors('*')}">
+                <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+            </div>
             <br>
             <button type="submit">Sign up</button>
         </div>

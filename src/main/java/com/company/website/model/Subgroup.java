@@ -27,7 +27,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class Subgroup {
+public class Subgroup implements CustomEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

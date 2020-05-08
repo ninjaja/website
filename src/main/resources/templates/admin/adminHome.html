@@ -55,6 +55,9 @@
             <label>Description <input type="text" th:name="description" th:value="*{description}"></label>
             <label th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></label>
         </div>
+        <div th:if="${#fields.hasErrors('global')}">
+            <p th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
+        </div>
         <br/>
         <button type="submit">Add Category</button>
     </form>

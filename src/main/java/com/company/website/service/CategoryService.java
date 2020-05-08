@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -46,8 +45,15 @@ public class CategoryService {
         return mapper.map(repository.findByUrl(url));
     }
 
-    public Optional<CategoryDTO> findById(Integer id) {
-        return Optional.of(mapper.map(repository.findById(id).orElseThrow(EntityNotFoundException::new)));
+    public CategoryDTO findById(Integer id) {
+        return mapper.map(repository.findById(id).orElseThrow(EntityNotFoundException::new));
+    }
+
+    public void copyOnError(final CategoryDTO categoryDTO) {
+        final CategoryDTO oldCategoryDTO = findById(categoryDTO.getId());
+        categoryDTO.setTitle(oldCategoryDTO.getTitle());
+        categoryDTO.setUrl(oldCategoryDTO.getUrl());
+        categoryDTO.setDescription(oldCategoryDTO.getDescription());
     }
 
 }

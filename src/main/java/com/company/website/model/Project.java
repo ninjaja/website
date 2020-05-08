@@ -27,7 +27,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class Project {
+public class Project implements CustomEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

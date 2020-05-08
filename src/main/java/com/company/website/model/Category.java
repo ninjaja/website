@@ -26,7 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class Category {
+public class Category implements CustomEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

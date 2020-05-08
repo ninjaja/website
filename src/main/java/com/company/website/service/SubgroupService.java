@@ -9,6 +9,7 @@ import com.company.website.service.mapping.SubgroupMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +46,17 @@ public class SubgroupService {
 
     public SubgroupDTO findByUrl(String url) {
         return subgroupMapper.map(subgroupRepository.findByUrl(url));
+    }
+
+    public SubgroupDTO findById(Integer id) {
+        return subgroupMapper.map(subgroupRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+    }
+
+    public void copyOnError(final SubgroupDTO subgroupDTO) {
+        final SubgroupDTO oldSubgroupDTO = findById(subgroupDTO.getId());
+        subgroupDTO.setTitle(oldSubgroupDTO.getTitle());
+        subgroupDTO.setUrl(oldSubgroupDTO.getUrl());
+        subgroupDTO.setDescription(oldSubgroupDTO.getDescription());
     }
 
 }

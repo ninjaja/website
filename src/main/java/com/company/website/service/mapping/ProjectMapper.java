@@ -1,6 +1,9 @@
 package com.company.website.service.mapping;
 
+import com.company.website.dto.ImageDTO;
 import com.company.website.dto.ProjectDTO;
+import com.company.website.exception.NoImagesInProjectException;
+import com.company.website.model.Image;
 import com.company.website.model.Project;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +16,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ProjectMapper {
 
-    private final SubgroupMapper mapper;
+    private final ImageMapper imageMapper;
 
     public Project map(ProjectDTO dto) {
         Project project = new Project();
@@ -30,6 +33,7 @@ public class ProjectMapper {
         dto.setTitle(project.getTitle());
         dto.setUrl(project.getUrl());
         dto.setDescription(project.getDescription());
+        dto.setHasImages(checkIfHasImages(project));
         return dto;
     }
 
@@ -38,6 +42,15 @@ public class ProjectMapper {
         project.setUrl(dto.getUrl());
         project.setDescription(dto.getDescription());
         return project;
+    }
+
+    public ImageDTO getAnyImage(Project project) {
+        Image image = project.getImages().stream().findAny().orElseThrow(NoImagesInProjectException::new);
+        return imageMapper.map(image);
+    }
+
+    private boolean checkIfHasImages(Project project) {
+        return !project.getImages().isEmpty();
     }
 
 }

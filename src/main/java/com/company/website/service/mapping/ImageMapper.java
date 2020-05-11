@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ImageMapper {
 
-    private final ProjectMapper mapper;
-
     public Image map(ImageDTO dto) {
         Image image = new Image();
         image.setId(dto.getId());

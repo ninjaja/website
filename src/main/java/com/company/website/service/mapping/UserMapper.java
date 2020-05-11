@@ -15,7 +15,6 @@ public class UserMapper {
         User user = new User();
         user.setLogin(dto.getLogin());
         user.setPassword(dto.getPassword());
-        // TODO: 05.05.2020 setRoles
         return user;
     }
 

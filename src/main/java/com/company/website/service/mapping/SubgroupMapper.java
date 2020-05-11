@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class SubgroupMapper {
 
-    private final CategoryMapper mapper;
-
     public Subgroup map(SubgroupDTO dto) {
         Subgroup subgroup = new Subgroup();
         subgroup.setId(dto.getId());

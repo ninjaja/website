@@ -1,9 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:object="${category}" th:text="${category.title}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <div th:replace="header :: custom_header"></div>
 </head>
 <body>
 <h1 th:text="${category.title}"></h1>
@@ -38,5 +37,6 @@
     </table>
 </div>
 
+<div th:insert="footer :: custom_footer"></div>
 </body>
 </html>

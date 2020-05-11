@@ -27,8 +27,9 @@ public class UserPagesController {
     private final ImageService imageService;
 
     @GetMapping("/")
-    public String greeting(final Model model) {
-        model.addAttribute("categories", categoryService.findAll());
+    public String greeting(final ProjectDTO projectDTO, final Model model) {
+        model.addAttribute("projects", projectService.findAllWithImages());
+        model.addAttribute("projectDTO", projectDTO);
         return "user/userHome";
     }
 
@@ -45,7 +46,7 @@ public class UserPagesController {
         return "user/userCategory";
     }
 
-    @GetMapping("/{categoryUrl}/{subgroupUrl}")
+    @GetMapping("/{categoryUrl:^(?:css|img).+}/{subgroupUrl}")
     public String viewSubgroup(@PathVariable final String categoryUrl, @PathVariable final String subgroupUrl,
                                final Model model) {
         CategoryDTO category = categoryService.findByUrl(categoryUrl);

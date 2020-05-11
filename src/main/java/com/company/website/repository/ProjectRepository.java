@@ -23,8 +23,11 @@ public interface ProjectRepository extends CrudRepository<Project, Integer>, Cus
 
     List<Project> findAllBySubgroupTitle(String subgroupTitle);
 
+    List<Project> findAll();
+
     Project findByUrl(String projectUrl);
 
     void removeByTitle(String title);
+
 
 }

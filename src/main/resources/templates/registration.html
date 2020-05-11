@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Sign up</title>
+    <div th:replace="header :: custom_header"></div>
 </head>
 <body>
 <b>Sign up</b>
@@ -18,5 +19,7 @@
         </div>
     </form>
 </div>
+
+<div th:insert="footer :: custom_footer"></div>
 </body>
 </html>

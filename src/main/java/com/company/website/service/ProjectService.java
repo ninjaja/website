@@ -1,5 +1,6 @@
 package com.company.website.service;
 
+import com.company.website.dto.ImageDTO;
 import com.company.website.dto.ProjectDTO;
 import com.company.website.dto.SubgroupDTO;
 import com.company.website.model.Project;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +27,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final SubgroupRepository subgroupRepository;
+    private final ImageService imageService;
     private final ProjectMapper projectMapper;
 
     public Iterable<ProjectDTO> findAllBySubgroup(SubgroupDTO subgroup) {
@@ -56,6 +60,26 @@ public class ProjectService {
         projectDTO.setTitle(oldProjectDTO.getTitle());
         projectDTO.setUrl(oldProjectDTO.getUrl());
         projectDTO.setDescription(oldProjectDTO.getDescription());
+    }
+
+    public Iterable<ProjectDTO> findAll() {
+        return projectRepository.findAll().stream()
+                .map(projectMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    public Iterable<ProjectDTO> findAllWithImages() {
+        List<ProjectDTO> list = new ArrayList<>();
+        for (Project project : projectRepository.findAll()) {
+            ProjectDTO projectDTO = projectMapper.map(project);
+            if (projectDTO.isHasImages()) {
+                ImageDTO imageDTO = projectMapper.getAnyImage(project);
+                imageDTO.setData(imageService.applyDataOnRead(imageDTO, projectDTO.getTitle()));
+                projectDTO.setFirstImage(imageDTO);
+                list.add(projectDTO);
+            }
+        }
+        return list;
     }
 
 }

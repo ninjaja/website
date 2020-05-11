@@ -39,4 +39,8 @@ public class ProjectDTO implements EntityDTO {
 
     private Set<ImageDTO> images;
 
+    private ImageDTO firstImage;
+
+    private boolean hasImages;
+
 }

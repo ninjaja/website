@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="${categoryDTO.title}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <div th:replace="header :: custom_header"></div>
 </head>
 <body>
 <h1 th:text="${categoryDTO.title}"></h1>
@@ -90,5 +90,6 @@
     </form>
 </div>
 
+<div th:insert="footer :: custom_footer"></div>
 </body>
 </html>

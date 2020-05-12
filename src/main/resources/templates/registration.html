@@ -5,20 +5,27 @@
     <div th:replace="header :: custom_header"></div>
 </head>
 <body>
-<b>Sign up</b>
-<div>
-    <form th:action="@{/registration}" th:object="${userDTO}" method="post">
-        <div>
-            <label> Username: <input type="text" th:name="login" th:value="*{login}"/></label>
-            <label> Password: <input type="password" th:name="password" th:value="*{password}"/> </label>
-            <div th:if="${#fields.hasErrors('*')}">
-                <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <b>Sign up</b>
+            <div>
+                <form th:action="@{/registration}" th:object="${userDTO}" method="post">
+                    <div>
+                        <label> Username: <input type="text" th:name="login" th:value="*{login}"/></label>
+                        <label> Password: <input type="password" th:name="password" th:value="*{password}"/> </label>
+                        <div th:if="${#fields.hasErrors('*')}">
+                            <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                        </div>
+                        <br>
+                        <button type="submit">Sign up</button>
+                    </div>
+                </form>
             </div>
-            <br>
-            <button type="submit">Sign up</button>
         </div>
-    </form>
+    </div>
 </div>
+
 
 <div th:insert="footer :: custom_footer"></div>
 </body>

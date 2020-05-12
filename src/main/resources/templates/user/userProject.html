@@ -5,29 +5,35 @@
     <div th:replace="header :: custom_header"></div>
 </head>
 <body>
-<h1 th:text="${project.title}"></h1>
-<h2 th:text="${project.description}"></h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 th:text="${project.title}"></h1>
+            <h2 th:text="${project.description}"></h2>
 
-<div>
-    <div><b>Images:</b></div>
-    <table>
-        <thead>
-        <tr>
-            <th>id</th>
-            <th>Title</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${images.empty}">
-            <td colspan="2"> No images available</td>
-        </tr>
-        <tr th:each="image : ${images}">
-            <td><span th:text="${image.id}"> id </span></td>
-            <td><span th:text="${image.title}"> Title </span></td>
-            <td><img th:src="@{'data:image/jpeg;base64,' + ${image.data}}" alt=""/></td>
-        </tr>
-        </tbody>
-    </table>
+            <div>
+                <div><b>Images:</b></div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Title</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${images.empty}">
+                        <td colspan="2"> No images available</td>
+                    </tr>
+                    <tr th:each="image : ${images}">
+                        <td><span th:text="${image.id}"> id </span></td>
+                        <td><span th:text="${image.title}"> Title </span></td>
+                        <td><img th:src="@{'data:image/jpeg;base64,' + ${image.data}}" alt=""/></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div th:insert="footer :: custom_footer"></div>

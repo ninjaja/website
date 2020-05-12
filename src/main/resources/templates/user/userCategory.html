@@ -7,34 +7,39 @@
 <body>
 <h1 th:text="${category.title}"></h1>
 <h2 th:text="${category.description}"></h2>
-
-<div>
-    <div><b>Subgroups:</b></div>
-    <table>
-        <thead>
-        <tr>
-            <th>id</th>
-            <th>Title</th>
-            <th>URL</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${subgroups.empty}">
-            <td colspan="2"> No subgroups available</td>
-        </tr>
-        <tr th:each="subgroup : ${subgroups}">
-            <td><span th:text="${subgroup.id}"> id </span></td>
-            <td><span th:text="${subgroup.title}"> Title </span></td>
-            <td>
-                <a th:href="@{/{categoryUrl}/{subgroupUrl}(categoryUrl = ${category.url}, subgroupUrl = ${subgroup.url})}">
-                    <span th:text="${subgroup.url}"> URL </span>
-                </a>
-            </td>
-            <td><span th:text="${subgroup.description}"> Description </span></td>
-        </tr>
-        </tbody>
-    </table>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+                <div><b>Subgroups:</b></div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Title</th>
+                        <th>URL</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${subgroups.empty}">
+                        <td colspan="2"> No subgroups available</td>
+                    </tr>
+                    <tr th:each="subgroup : ${subgroups}">
+                        <td><span th:text="${subgroup.id}"> id </span></td>
+                        <td><span th:text="${subgroup.title}"> Title </span></td>
+                        <td>
+                            <a th:href="@{/{categoryUrl}/{subgroupUrl}(categoryUrl = ${category.url}, subgroupUrl = ${subgroup.url})}">
+                                <span th:text="${subgroup.url}"> URL </span>
+                            </a>
+                        </td>
+                        <td><span th:text="${subgroup.description}"> Description </span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div th:insert="footer :: custom_footer"></div>

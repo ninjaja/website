@@ -1,12 +1,17 @@
 package com.company.website.service;
 
+import com.company.website.dto.CategoryDTO;
 import com.company.website.dto.ImageDTO;
 import com.company.website.dto.ProjectDTO;
 import com.company.website.dto.SubgroupDTO;
+import com.company.website.model.Category;
 import com.company.website.model.Project;
+import com.company.website.model.Subgroup;
 import com.company.website.repository.ProjectRepository;
 import com.company.website.repository.SubgroupRepository;
+import com.company.website.service.mapping.CategoryMapper;
 import com.company.website.service.mapping.ProjectMapper;
+import com.company.website.service.mapping.SubgroupMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +34,8 @@ public class ProjectService {
     private final SubgroupRepository subgroupRepository;
     private final ImageService imageService;
     private final ProjectMapper projectMapper;
+    private final SubgroupMapper subgroupMapper;
+    private final CategoryMapper categoryMapper;
 
     public Iterable<ProjectDTO> findAllBySubgroup(SubgroupDTO subgroup) {
         return projectRepository.findAllBySubgroupTitle(subgroup.getTitle()).stream()
@@ -62,12 +69,6 @@ public class ProjectService {
         projectDTO.setDescription(oldProjectDTO.getDescription());
     }
 
-    public Iterable<ProjectDTO> findAll() {
-        return projectRepository.findAll().stream()
-                .map(projectMapper::map)
-                .collect(Collectors.toList());
-    }
-
     public Iterable<ProjectDTO> findAllWithImages() {
         List<ProjectDTO> list = new ArrayList<>();
         for (Project project : projectRepository.findAll()) {
@@ -76,6 +77,12 @@ public class ProjectService {
                 ImageDTO imageDTO = projectMapper.getAnyImage(project);
                 imageDTO.setData(imageService.applyDataOnRead(imageDTO, projectDTO.getTitle()));
                 projectDTO.setFirstImage(imageDTO);
+                Subgroup subgroup = project.getSubgroup();
+                SubgroupDTO subgroupDTO = subgroupMapper.map(subgroup);
+                Category category = subgroup.getCategory();
+                CategoryDTO categoryDTO = categoryMapper.map(category);
+                subgroupDTO.setCategory(categoryDTO);
+                projectDTO.setSubgroup(subgroupDTO);
                 list.add(projectDTO);
             }
         }

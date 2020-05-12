@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageService.class);
-    private static final int MAX_DIMENSION = 800;
+    private static final int MAX_DIMENSION = 1600;
     private static final int MAX_FILE_SIZE = (int) (1.5 * 1024 * 1024);
     private static final String GIF = "gif";
     private static final String STORAGE_PATH = "src/main/resources/images/";

@@ -8,6 +8,9 @@ import com.company.website.model.Project;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * @author Dmitry Matrizaev
  * @since 05.05.2020
@@ -50,7 +53,11 @@ public class ProjectMapper {
     }
 
     private boolean checkIfHasImages(Project project) {
-        return !project.getImages().isEmpty();
+        final Set<Image> images = project.getImages();
+        if (Objects.nonNull(images)) {
+            return !images.isEmpty();
+        }
+        return false;
     }
 
 }

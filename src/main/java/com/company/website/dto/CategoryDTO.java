@@ -19,7 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @UniqueTitle
 @UniqueURL
-public class CategoryDTO implements EntityDTO {
+public class CategoryDTO implements CustomDTO {
 
     private int id;
 

@@ -19,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
+import static com.company.website.controller.constants.ControllerConstants.ADMIN_SUBGROUP;
+import static com.company.website.controller.constants.ControllerConstants.REDIRECT_SUBGROUP;
+
 /**
  * @author Dmitry Matrizaev
  * @since 23.04.2020
@@ -26,9 +29,6 @@ import javax.validation.Valid;
 @Controller
 @AllArgsConstructor
 public class SubgroupController {
-
-    private static final String REDIRECT_SUBGROUP = "redirect:/admin/%s/%s";
-    private static final String ADMIN_SUBGROUP = "admin/adminSubgroup";
 
     private final CategoryService categoryService;
     private final SubgroupService subgroupService;
@@ -52,7 +52,7 @@ public class SubgroupController {
         CategoryDTO categoryDTO;
         if (result.hasErrors()) {
             categoryDTO = categoryService.findByUrl(categoryUrl);
-            subgroupService.copyOnError(subgroupDTO);
+            subgroupService.copyDTOValuesOnEditError(subgroupDTO);
             return serveSubgroupPage(categoryDTO, subgroupDTO, projectDTO, model);
         }
         categoryDTO = categoryService.findByUrl(categoryUrl);

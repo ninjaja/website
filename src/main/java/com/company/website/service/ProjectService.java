@@ -62,7 +62,7 @@ public class ProjectService {
         return projectMapper.map(projectRepository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
-    public void copyOnError(final ProjectDTO projectDTO) {
+    public void copyDTOValuesOnEditError(final ProjectDTO projectDTO) {
         final ProjectDTO oldProjectDTO = findById(projectDTO.getId());
         projectDTO.setTitle(oldProjectDTO.getTitle());
         projectDTO.setUrl(oldProjectDTO.getUrl());
@@ -71,22 +71,26 @@ public class ProjectService {
 
     public Iterable<ProjectDTO> findAllWithImages() {
         List<ProjectDTO> list = new ArrayList<>();
-        for (Project project : projectRepository.findAll()) {
+        projectRepository.findAll().forEach(project -> {
             ProjectDTO projectDTO = projectMapper.map(project);
             if (projectDTO.isHasImages()) {
                 ImageDTO imageDTO = projectMapper.getAnyImage(project);
                 imageDTO.setData(imageService.applyDataOnRead(imageDTO, projectDTO.getTitle()));
                 projectDTO.setFirstImage(imageDTO);
-                Subgroup subgroup = project.getSubgroup();
-                SubgroupDTO subgroupDTO = subgroupMapper.map(subgroup);
-                Category category = subgroup.getCategory();
-                CategoryDTO categoryDTO = categoryMapper.map(category);
-                subgroupDTO.setCategory(categoryDTO);
-                projectDTO.setSubgroup(subgroupDTO);
+                setParents(projectDTO, project);
                 list.add(projectDTO);
             }
-        }
+        });
         return list;
+    }
+
+    private void setParents(final ProjectDTO projectDTO, final Project project) {
+        final Subgroup subgroup = project.getSubgroup();
+        final SubgroupDTO subgroupDTO = subgroupMapper.map(subgroup);
+        final Category category = subgroup.getCategory();
+        final CategoryDTO categoryDTO = categoryMapper.map(category);
+        subgroupDTO.setCategory(categoryDTO);
+        projectDTO.setSubgroup(subgroupDTO);
     }
 
 }

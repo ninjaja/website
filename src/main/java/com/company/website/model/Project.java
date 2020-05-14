@@ -1,9 +1,8 @@
 package com.company.website.model;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
@@ -23,11 +22,8 @@ import java.util.Set;
  * @since 20.04.2020
  */
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class Project implements CustomEntity {
 
     @Id

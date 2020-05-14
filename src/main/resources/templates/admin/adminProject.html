@@ -7,10 +7,9 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
-            <h1 th:text="${projectDTO.title}"></h1>
-            <h2 th:text="${projectDTO.description}"></h2>
-
+        <div class="col-12">
+            <h3 class="project-title" th:text="${projectDTO.title}"></h3>
+            <div class="project-description" th:text="${projectDTO.description}"></div>
             <div>
                 <div><b>Edit project:</b></div>
                 <form th:action="@{/admin/editProject}" th:object="${projectDTO}" method="post">
@@ -35,37 +34,28 @@
                     <button type="submit">Edit</button>
                 </form>
             </div>
-
-            <div>
-                <div><b>Images:</b></div>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Title</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${#lists.isEmpty(images)}">
-                        <td colspan="2"> No images available</td>
-                    </tr>
-                    <tr th:each="imageDTO : ${images}">
-                        <td><span th:text="${imageDTO.title}"> Title </span></td>
-                        <td><img th:src="@{'data:image/jpeg;base64,' + ${imageDTO.data}}" alt=""/></td>
-                        <td>
-                            <div>
-                                <form th:action="@{/admin/removeImage}" method="post">
-                                    <input type="hidden" th:name="categoryUrl" th:value="${categoryDTO.url}">
-                                    <input type="hidden" th:name="subgroupUrl" th:value="${subgroupDTO.url}">
-                                    <input type="hidden" th:name="projectUrl" th:value="${projectDTO.url}">
-                                    <input type="hidden" th:name="imageTitle" th:value="${imageDTO.title}">
-                                    <button type="submit">Remove</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div th:if="${#lists.isEmpty(images)}">
+                <span> No images available</span>
             </div>
+            <table>
+                <tbody>
+                <tr th:each="imageDTO : ${images}">
+                    <td><span th:text="${imageDTO.title}"> Title </span></td>
+                    <td><img class="project-images" th:src="@{'data:image/jpeg;base64,' + ${imageDTO.data}}" alt=""/></td>
+                    <td>
+                        <div>
+                            <form th:action="@{/admin/removeImage}" method="post">
+                                <input type="hidden" th:name="categoryUrl" th:value="${categoryDTO.url}">
+                                <input type="hidden" th:name="subgroupUrl" th:value="${subgroupDTO.url}">
+                                <input type="hidden" th:name="projectUrl" th:value="${projectDTO.url}">
+                                <input type="hidden" th:name="imageTitle" th:value="${imageDTO.title}">
+                                <button type="submit">Remove</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
             <div>
                 <div><b>Add new images:</b></div>
                 <form th:action="@{/admin/addImages}" method="post" enctype="multipart/form-data">

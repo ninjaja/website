@@ -19,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
+import static com.company.website.controller.constants.ControllerConstants.ADMIN_PROJECT;
+import static com.company.website.controller.constants.ControllerConstants.REDIRECT_PROJECT;
+
 /**
  * @author Dmitry Matrizaev
  * @since 23.04.2020
@@ -26,9 +29,6 @@ import javax.validation.Valid;
 @Controller
 @AllArgsConstructor
 public class ProjectController {
-
-    private static final String REDIRECT_PROJECT = "redirect:/admin/%s/%s/%s";
-    private static final String ADMIN_PROJECT = "admin/adminProject";
 
     private final CategoryService categoryService;
     private final SubgroupService subgroupService;
@@ -48,7 +48,7 @@ public class ProjectController {
                               @RequestParam final String categoryUrl,
                               @RequestParam final String subgroupUrl, final Model model) {
         if(result.hasErrors()) {
-            projectService.copyOnError(projectDTO);
+            projectService.copyDTOValuesOnEditError(projectDTO);
             return serveProjectPage(categoryUrl, subgroupUrl, projectDTO, imageDTO, model);
         }
         final SubgroupDTO subgroupDTO = subgroupService.findByUrl(subgroupUrl);

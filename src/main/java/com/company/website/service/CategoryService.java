@@ -49,7 +49,7 @@ public class CategoryService {
         return mapper.map(repository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
-    public void copyOnError(final CategoryDTO categoryDTO) {
+    public void copyDTOValuesOnEditError(final CategoryDTO categoryDTO) {
         final CategoryDTO oldCategoryDTO = findById(categoryDTO.getId());
         categoryDTO.setTitle(oldCategoryDTO.getTitle());
         categoryDTO.setUrl(oldCategoryDTO.getUrl());

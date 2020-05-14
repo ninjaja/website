@@ -52,7 +52,7 @@ public class SubgroupService {
         return subgroupMapper.map(subgroupRepository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
-    public void copyOnError(final SubgroupDTO subgroupDTO) {
+    public void copyDTOValuesOnEditError(final SubgroupDTO subgroupDTO) {
         final SubgroupDTO oldSubgroupDTO = findById(subgroupDTO.getId());
         subgroupDTO.setTitle(oldSubgroupDTO.getTitle());
         subgroupDTO.setUrl(oldSubgroupDTO.getUrl());

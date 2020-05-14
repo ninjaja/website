@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @UniqueTitle
 @UniqueURL
-public class SubgroupDTO implements EntityDTO {
+public class SubgroupDTO implements CustomDTO {
 
     private int id;
 

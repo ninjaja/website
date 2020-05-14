@@ -1,9 +1,8 @@
 package com.company.website.model;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.CascadeType;
@@ -21,11 +20,8 @@ import java.util.Set;
  * @since 20.04.2020
  */
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class Category implements CustomEntity {
 
     @Id

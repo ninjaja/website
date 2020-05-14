@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @UniqueTitle
 @UniqueURL
-public class ProjectDTO implements EntityDTO {
+public class ProjectDTO implements CustomDTO {
 
     private int id;
 

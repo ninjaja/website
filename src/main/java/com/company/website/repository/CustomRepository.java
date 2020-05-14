@@ -1,11 +1,13 @@
 package com.company.website.repository;
 
 import com.company.website.model.CustomEntity;
+import org.springframework.data.repository.NoRepositoryBean;
 
 /**
  * @author Dmitry Matrizaev
  * @since 08.05.2020
  */
+@NoRepositoryBean
 public interface CustomRepository<T extends CustomEntity> {
 
     T findByTitle(String title);

@@ -5,36 +5,41 @@
     <div th:replace="header :: custom_header"></div>
 </head>
 <body>
-
-<div class="carousel slide" id="slides" data-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img class="d-block w-100" th:src="@{'data:image/jpeg;base64,' + ${projects[0].firstImage.data}}" alt="">
-            <div class="carousel-caption">
-                <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="carousel slide" id="slides" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" th:src="@{'data:image/jpeg;base64,' + ${projects[0].firstImage.data}}" alt="">
+                        <div class="carousel-caption">
+                            <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
                 (categoryUrl = ${projects[0].subgroup.category.url}, subgroupUrl = ${projects[0].subgroup.url}, projectUrl = ${projects[0].url})}"
-                   class="btn btn-primary btn-lg">VIEW</a>
-            </div>
-        </div>
-        <div class="carousel-item" th:each="projectDTO, iter : ${projects}"
-             th:if="${!iter.first} and ${projectDTO.firstImage.data != null}">
-            <img class="d-block w-100" th:src="@{'data:image/jpeg;base64,' + ${projectDTO.firstImage.data}}" alt="">
-            <div class="carousel-caption">
-                <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
+                               class="btn btn-primary btn-lg">VIEW</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item" th:each="projectDTO, iter : ${projects}"
+                         th:if="${!iter.first} and ${projectDTO.firstImage.data != null}">
+                        <img class="d-block w-100" th:src="@{'data:image/jpeg;base64,' + ${projectDTO.firstImage.data}}" alt="">
+                        <div class="carousel-caption">
+                            <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
                 (categoryUrl = ${projectDTO.subgroup.category.url}, subgroupUrl = ${projectDTO.subgroup.url}, projectUrl = ${projectDTO.url})}"
-                   class="btn btn-primary btn-lg">VIEW</a>
+                               class="btn btn-primary btn-lg">VIEW</a>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#slides" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#slides" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
         </div>
     </div>
-    <a class="carousel-control-prev" href="#slides" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#slides" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
 </div>
-
+<footer th:replace="footer :: custom_footer"></footer>
 </body>
 </html>

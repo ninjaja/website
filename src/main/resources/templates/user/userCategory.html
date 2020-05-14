@@ -1,15 +1,17 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:object="${category}" th:text="${category.title}"></title>
+    <title th:text="${categoryDTO.title}"></title>
     <div th:replace="header :: custom_header"></div>
 </head>
 <body>
-<h1 th:text="${category.title}"></h1>
-<h2 th:text="${category.description}"></h2>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            <h3 class="project-title" th:text="${categoryDTO.title}"></h3>
+            <div class="project-description" th:text="${categoryDTO.description}"></div>
+
+
             <div>
                 <div><b>Subgroups:</b></div>
                 <table>
@@ -22,14 +24,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${subgroups.empty}">
+                    <tr th:if="${#lists.isEmpty(subgroups)}">
                         <td colspan="2"> No subgroups available</td>
                     </tr>
                     <tr th:each="subgroup : ${subgroups}">
                         <td><span th:text="${subgroup.id}"> id </span></td>
                         <td><span th:text="${subgroup.title}"> Title </span></td>
                         <td>
-                            <a th:href="@{/{categoryUrl}/{subgroupUrl}(categoryUrl = ${category.url}, subgroupUrl = ${subgroup.url})}">
+                            <a th:href="@{/{categoryUrl}/{subgroupUrl}(categoryUrl = ${categoryDTO.url}, subgroupUrl = ${subgroup.url})}">
                                 <span th:text="${subgroup.url}"> URL </span>
                             </a>
                         </td>
@@ -38,6 +40,9 @@
                     </tbody>
                 </table>
             </div>
+
+
+
         </div>
     </div>
 </div>

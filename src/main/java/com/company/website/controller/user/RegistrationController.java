@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 
+import static com.company.website.controller.constants.ControllerConstants.REDIRECT_TO_MAIN;
+import static com.company.website.controller.constants.ControllerConstants.REGISTRATION;
+
 /**
  *
  * @author Dmitry Matrizaev
@@ -30,7 +33,7 @@ public class RegistrationController {
     @GetMapping("/registration")
     public String registration(final UserDTO userDTO, final Model model) {
         model.addAttribute("userDTO", userDTO);
-        return "common/registration";
+        return REGISTRATION;
     }
 
     @PostMapping("/registration")
@@ -38,11 +41,11 @@ public class RegistrationController {
         model.addAttribute("userDTO", userDTO);
         validator.validate(userDTO, result);
         if (result.hasErrors()) {
-            return "common/registration";
+            return REGISTRATION;
         }
         RoleDTO roleDTO = roleService.findByName("USER");
         userService.save(userDTO, roleDTO);
-        return "redirect:/";
+        return REDIRECT_TO_MAIN;
     }
 
 }

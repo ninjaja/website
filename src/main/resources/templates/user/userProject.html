@@ -1,41 +1,64 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${project.title}"></title>
+    <title th:text="${projectDTO.title}"></title>
     <div th:replace="header :: custom_header"></div>
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
-            <h1 th:text="${project.title}"></h1>
-            <h2 th:text="${project.description}"></h2>
-
-            <div>
-                <div><b>Images:</b></div>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>Title</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${images.empty}">
-                        <td colspan="2"> No images available</td>
-                    </tr>
-                    <tr th:each="image : ${images}">
-                        <td><span th:text="${image.id}"> id </span></td>
-                        <td><span th:text="${image.title}"> Title </span></td>
-                        <td><img th:src="@{'data:image/jpeg;base64,' + ${image.data}}" alt=""/></td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="col-12">
+            <h3 class="project-title" th:text="${projectDTO.title}"></h3>
+            <div class="project-description" th:text="${projectDTO.description}"></div>
+            <div th:if="${#lists.isEmpty(imagePage.content)}">
+                <span> Images will be added soon</span>
             </div>
+            <img th:each="imageDTO : ${imagePage.content}" class="project-images" th:src="@{'data:image/jpeg;base64,' + ${imageDTO.data}}" alt=""/>
+            <!-- pagination -->
+            <nav aria-label="Pagination" th:if="${imagePage.totalPages gt 0}">
+                <ul class="pagination pagination-lg justify-content-center font-weight-medium">
+                    <li class="page-item" th:classappend="${imagePage.number eq 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
+                           (page=${imagePage.number lt 2 ? 1 : imagePage.number},
+                               categoryUrl = ${imagePage.content[0].project.subgroup.category.url},
+                               subgroupUrl = ${imagePage.content[0].project.subgroup.url},
+                               projectUrl = ${imagePage.content[0].project.url})}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${i eq imagePage.number + 1} ? 'active'"
+                        th:each="i : ${#numbers.sequence(1, imagePage.totalPages > 10 + imagePage.number ? imagePage.number + 10 : imagePage.totalPages, 1)}">
+                        <a class="page-link" th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}(page=${i},
+                            categoryUrl = ${imagePage.content[0].project.subgroup.category.url},
+                            subgroupUrl = ${imagePage.content[0].project.subgroup.url},
+                            projectUrl = ${imagePage.content[0].project.url})}"
+                           th:text="${i}"></a>
+                    </li>
+                    <li class="page-item disabled" th:if="${imagePage.number + 10 < imagePage.totalPages}">
+                        <a class="page-link" href="#">
+                            <span>...</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${imagePage.number + 1 eq imagePage.totalPages} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}(page=${imagePage.number + 2},
+                                categoryUrl = ${imagePage.content[0].project.subgroup.category.url},
+                                subgroupUrl = ${imagePage.content[0].project.subgroup.url},
+                                projectUrl = ${imagePage.content[0].project.url})}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
 
-<div th:insert="footer :: custom_footer"></div>
+<footer th:replace="footer :: custom_footer"></footer>
 </body>
 </html>

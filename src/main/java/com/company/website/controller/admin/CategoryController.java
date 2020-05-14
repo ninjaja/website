@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.company.website.controller.constants.ControllerConstants.CATEGORY;
+import static com.company.website.controller.constants.ControllerConstants.REDIRECT_TO_CATEGORY;
+
 /**
  * @author Dmitry Matrizaev
  * @since 22.04.2020
@@ -23,9 +26,6 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 public class CategoryController {
-
-    private static final String REDIRECT_TO_CATEGORY = "redirect:/admin/%s";
-    private static final String CATEGORY = "admin/adminCategory";
 
     private final CategoryService categoryService;
     private final SubgroupService subgroupService;
@@ -41,7 +41,7 @@ public class CategoryController {
     public String editCategory(@Valid final CategoryDTO categoryDTO, final BindingResult result,
                                final SubgroupDTO subgroupDTO, final Model model) {
         if (result.hasErrors()) {
-            categoryService.copyOnError(categoryDTO);
+            categoryService.copyDTOValuesOnEditError(categoryDTO);
             return serveCategoryPage(categoryDTO, subgroupDTO, model);
         }
         categoryService.save(categoryDTO);

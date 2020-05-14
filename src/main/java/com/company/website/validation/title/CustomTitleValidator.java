@@ -1,6 +1,6 @@
 package com.company.website.validation.title;
 
-import com.company.website.dto.EntityDTO;
+import com.company.website.dto.CustomDTO;
 import com.company.website.model.CustomEntity;
 import com.company.website.repository.CustomRepository;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import javax.validation.ConstraintValidatorContext;
  * @since 08.05.2020
  */
 @AllArgsConstructor
-public class CustomTitleValidator<T extends EntityDTO, U extends CustomRepository>
+public class CustomTitleValidator<T extends CustomDTO, U extends CustomRepository>
         implements ConstraintValidator<UniqueTitle, T> {
 
     private final U repository;

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
+import static com.company.website.controller.constants.ControllerConstants.ADMIN_HOME;
+import static com.company.website.controller.constants.ControllerConstants.REDIRECT_TO_ADMIN;
+
 /**
  * @author Dmitry Matrizaev
  * @since 20.04.2020
@@ -20,19 +23,11 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class AdminMainController {
 
-    private static final String REDIRECT_TO_ADMIN = "redirect:/admin";
-    private static final String ADMIN_HOME = "admin/adminHome";
-
     private final CategoryService categoryService;
 
     @GetMapping("/admin")
     public String showAdminMain(final CategoryDTO categoryDTO, final Model model) {
         return serveAdminPage(categoryDTO, model);
-    }
-
-    @GetMapping("/admin/home")
-    public String goHome() {
-        return REDIRECT_TO_ADMIN;
     }
 
     @PostMapping("/admin/addCategory")

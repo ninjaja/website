@@ -1,13 +1,20 @@
 package com.company.website.service;
 
+import com.company.website.dto.CategoryDTO;
 import com.company.website.dto.ImageDTO;
 import com.company.website.dto.ProjectDTO;
+import com.company.website.dto.SubgroupDTO;
 import com.company.website.exception.NotAnImageException;
+import com.company.website.model.Category;
 import com.company.website.model.Image;
 import com.company.website.model.Project;
+import com.company.website.model.Subgroup;
 import com.company.website.repository.ImageRepository;
 import com.company.website.repository.ProjectRepository;
+import com.company.website.service.mapping.CategoryMapper;
 import com.company.website.service.mapping.ImageMapper;
+import com.company.website.service.mapping.ProjectMapper;
+import com.company.website.service.mapping.SubgroupMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -15,6 +22,8 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,6 +61,9 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final ProjectRepository projectRepository;
     private final ImageMapper imageMapper;
+    private final ProjectMapper projectMapper;
+    private final SubgroupMapper subgroupMapper;
+    private final CategoryMapper categoryMapper;
 
     public void processImageOnWrite(MultipartFile file, ProjectDTO projectDTO) {
         ImageDTO imageDTO = new ImageDTO();
@@ -74,6 +86,33 @@ public class ImageService {
         return findAllByProject(project).stream()
                 .peek(imageDTO -> imageDTO.setData(applyDataOnRead(imageDTO, project.getTitle())))
                 .collect(Collectors.toList());
+    }
+
+    public Page<ImageDTO> serveImagesOnReadPaginated(ProjectDTO project, Pageable pageable) {
+        final Page<ImageDTO> page = findAllByProjectPaginated(project, pageable);
+        for (ImageDTO imageDTO : page) {
+            imageDTO.setData(applyDataOnRead(imageDTO, project.getTitle()));
+            setParents(imageDTO);
+        }
+        return page;
+/*
+        return (Page<ImageDTO>) findAllByProjectPaginated(project, pageable).stream()
+                .peek(imageDTO -> imageDTO.setData(applyDataOnRead(imageDTO, project.getTitle())))
+                .peek(imageDTO -> setParents(imageDTO));
+*/
+    }
+
+    public void setParents(final ImageDTO imageDTO) {
+        final Image image = imageRepository.findByTitle(imageDTO.getTitle());
+        final Project project = image.getProject();
+        final ProjectDTO projectDTO = projectMapper.map(project);
+        final Subgroup subgroup = project.getSubgroup();
+        final SubgroupDTO subgroupDTO = subgroupMapper.map(subgroup);
+        final Category category = subgroup.getCategory();
+        final CategoryDTO categoryDTO = categoryMapper.map(category);
+        subgroupDTO.setCategory(categoryDTO);
+        projectDTO.setSubgroup(subgroupDTO);
+        imageDTO.setProject(projectDTO);
     }
 
     public String applyDataOnRead(ImageDTO image, String projectTitle) {
@@ -115,7 +154,7 @@ public class ImageService {
     }
 
     private byte[] processImageData(MultipartFile file) throws IOException {
-        byte[] output = null;
+        byte[] output;
         String format = Objects.requireNonNull(file.getContentType()).split("/")[1];
         long fileSize = file.getSize();
         if (isImageType(file)) {
@@ -159,6 +198,11 @@ public class ImageService {
         return imageRepository.findAllByProjectTitle(project.getTitle()).stream()
                 .map(imageMapper::map)
                 .collect(Collectors.toList());
+    }
+
+    public Page<ImageDTO> findAllByProjectPaginated(ProjectDTO project, Pageable pageable) {
+        return imageRepository.findAllByProjectTitle(project.getTitle(), pageable)
+                .map(imageMapper::map);
     }
 
 }

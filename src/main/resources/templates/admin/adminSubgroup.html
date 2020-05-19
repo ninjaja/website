@@ -30,7 +30,7 @@
                         <p th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
                     </div>
                     <input type="hidden" th:name="id" th:value="${subgroupDTO.id}">
-                    <input type="hidden" th:name="categoryUrl" th:value="${categoryDTO.url}">
+                    <input type="hidden" th:name="categoryUrl" th:value="${subgroupDTO.category.url}">
                     <button type="submit">Edit</button>
                 </form>
             </div>
@@ -52,7 +52,8 @@
                     <tr th:each="projectDTO : ${projects}">
                         <td><span th:text="${projectDTO.title}"> Title </span></td>
                         <td>
-                            <a th:href="@{/admin/{categoryUrl}/{subgroupUrl}/{projectUrl}(categoryUrl = ${categoryDTO.url},
+                            <a
+                                    th:href="@{/admin/{categoryUrl}/{subgroupUrl}/{projectUrl}(categoryUrl = ${subgroupDTO.category.url},
                         subgroupUrl = ${subgroupDTO.url}, projectUrl = ${projectDTO.url})}">
                                 <span th:text="${projectDTO.url}"> URL </span>
                             </a>
@@ -61,7 +62,8 @@
                         <td>
                             <div>
                                 <form th:action="@{/admin/removeProject}" method="post">
-                                    <input type="hidden" th:name="categoryUrl" th:value="${categoryDTO.url}">
+                                    <input type="hidden" th:name="categoryUrl"
+                                           th:value="${subgroupDTO.category.url}">
                                     <input type="hidden" th:name="subgroupUrl" th:value="${subgroupDTO.url}">
                                     <input type="hidden" th:name="projectTitle" th:value="${projectDTO.title}">
                                     <button type="submit">Remove</button>
@@ -91,7 +93,7 @@
                         <p th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
                     </div>
                     <input type="file" name="files" multiple>
-                    <input type="hidden" th:name="categoryUrl" th:value="${categoryDTO.url}">
+                    <input type="hidden" th:name="categoryUrl" th:value="${subgroupDTO.category.url}">
                     <input type="hidden" th:name="subgroupUrl" th:value="${subgroupDTO.url}">
                     <button type="submit">Add</button>
                 </form>

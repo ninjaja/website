@@ -3,7 +3,9 @@ package com.company.website.config;
 import com.company.website.repository.RoleRepository;
 import com.company.website.repository.UserRepository;
 import com.company.website.service.user.CustomUserInfoTokenService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -36,46 +38,28 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @EnableOAuth2Client
 @EnableGlobalMethodSecurity(securedEnabled = true)
+@AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final DataSource dataSource;
     private final UserDetailsService customUserDetailsService;
+
+    @Qualifier("oAuth2ClientConfiguration")
     private final OAuth2ClientContext oAuth2ClientContext;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-
-    public WebSecurityConfig(DataSource dataSource, UserDetailsService customUserDetailsService,
-                             OAuth2ClientContext oAuth2ClientContext, UserRepository userRepository,
-                             RoleRepository roleRepository) {
-        this.dataSource = dataSource;
-        this.customUserDetailsService = customUserDetailsService;
-        this.oAuth2ClientContext = oAuth2ClientContext;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-    }
-
-    private PasswordEncoder passwordEncoder;
-
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final EncoderConfig encoderConfig;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .userDetailsService(customUserDetailsService);
     }
 
     @Bean
-    public FilterRegistrationBean oAuth2ClientFilterRegistration(OAuth2ClientContextFilter oAuth2ClientContextFilter) {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(oAuth2ClientContextFilter);
+    public FilterRegistrationBean<OAuth2ClientContextFilter> filterRegistration(OAuth2ClientContextFilter filter) {
+        FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(filter);
         registration.setOrder(-100);
         return registration;
     }
@@ -103,14 +87,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         googleFilter.setTokenServices(tokenServices);
         tokenServices.setUserRepository(userRepository);
         tokenServices.setRoleRepository(roleRepository);
-        tokenServices.setPasswordEncoder(passwordEncoder);
+        tokenServices.setPasswordEncoder(encoderConfig.passwordEncoder());
         return googleFilter;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()// TODO: 21.04.2020 change this!
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/**").permitAll()
@@ -119,6 +103,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic();
         http
                 .addFilterBefore(ssoFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Configuration
+    protected static class EncoderConfig {
+
+        @Bean
+        PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+
     }
 
 }

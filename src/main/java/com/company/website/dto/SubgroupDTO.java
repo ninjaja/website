@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Set;
+import java.util.List;
 
 /**
  *
@@ -37,6 +37,6 @@ public class SubgroupDTO implements CustomDTO {
 
     private CategoryDTO category;
 
-    private Set<ProjectDTO> projects;
+    private List<ProjectDTO> projects;
 
 }

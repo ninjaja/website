@@ -2,11 +2,8 @@ package com.company.website.controller.admin;
 
 import com.company.website.dto.ImageDTO;
 import com.company.website.dto.ProjectDTO;
-import com.company.website.dto.SubgroupDTO;
-import com.company.website.service.CategoryService;
 import com.company.website.service.ImageService;
 import com.company.website.service.ProjectService;
-import com.company.website.service.SubgroupService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 
 import static com.company.website.controller.constants.ControllerConstants.ADMIN_PROJECT;
+import static com.company.website.controller.constants.ControllerConstants.IMAGES;
+import static com.company.website.controller.constants.ControllerConstants.IMAGE_DTO;
+import static com.company.website.controller.constants.ControllerConstants.PROJECT_DTO;
 import static com.company.website.controller.constants.ControllerConstants.REDIRECT_PROJECT;
 
 /**
@@ -30,16 +30,14 @@ import static com.company.website.controller.constants.ControllerConstants.REDIR
 @AllArgsConstructor
 public class ProjectController {
 
-    private final CategoryService categoryService;
-    private final SubgroupService subgroupService;
     private final ProjectService projectService;
     private final ImageService imageService;
 
     @GetMapping("/admin/{categoryUrl}/{subgroupUrl}/{projectUrl}")
     public String viewProject(@PathVariable final String categoryUrl, @PathVariable final String subgroupUrl,
                               @PathVariable final String projectUrl, final ImageDTO imageDTO, final Model model) {
-        final ProjectDTO projectDTO = projectService.findByUrl(projectUrl);
-        return serveProjectPage(categoryUrl, subgroupUrl, projectDTO, imageDTO, model);
+        final ProjectDTO projectDTO = projectService.viewProject(projectUrl);
+        return serveProjectPage(projectDTO, imageDTO, model);
     }
 
     @PostMapping("/admin/editProject")
@@ -49,11 +47,9 @@ public class ProjectController {
                               @RequestParam final String subgroupUrl, final Model model) {
         if(result.hasErrors()) {
             projectService.copyDTOValuesOnEditError(projectDTO);
-            return serveProjectPage(categoryUrl, subgroupUrl, projectDTO, imageDTO, model);
+            return serveProjectPage(projectDTO, imageDTO, model);
         }
-        final SubgroupDTO subgroupDTO = subgroupService.findByUrl(subgroupUrl);
-        projectService.save(projectDTO, subgroupDTO);
-        model.addAttribute("project", projectDTO);
+        projectService.save(projectDTO, subgroupUrl);
         return String.format(REDIRECT_PROJECT, categoryUrl, subgroupUrl, projectDTO.getUrl());
     }
 
@@ -63,7 +59,7 @@ public class ProjectController {
                             final Model model) {
         final ProjectDTO projectDTO = projectService.findByUrl(projectUrl);
         imageService.processImagesOnWrite(files, projectDTO);
-        model.addAttribute("images", imageService.findAllByProject(projectDTO));
+        model.addAttribute(IMAGES, imageService.findAllByProject(projectDTO));
         return String.format(REDIRECT_PROJECT, categoryUrl, subgroupUrl, projectUrl);
     }
 
@@ -75,13 +71,10 @@ public class ProjectController {
         return String.format(REDIRECT_PROJECT, categoryUrl, subgroupUrl, projectUrl);
     }
 
-    private String serveProjectPage(String categoryUrl, String subgroupUrl, ProjectDTO projectDTO,
-                                    ImageDTO imageDTO, Model model) {
-        model.addAttribute("categoryDTO", categoryService.findByUrl(categoryUrl));
-        model.addAttribute("subgroupDTO", subgroupService.findByUrl(subgroupUrl));
-        model.addAttribute("projectDTO", projectDTO);
-        model.addAttribute("imageDTO", imageDTO);
-        model.addAttribute("images", imageService.serveImagesOnRead(projectDTO));
+    private String serveProjectPage(ProjectDTO projectDTO, ImageDTO imageDTO, Model model) {
+        model.addAttribute(PROJECT_DTO, projectDTO);
+        model.addAttribute(IMAGE_DTO, imageDTO);
+        model.addAttribute(IMAGES, projectDTO.getImages());
         return ADMIN_PROJECT;
     }
 

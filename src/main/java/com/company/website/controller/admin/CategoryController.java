@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static com.company.website.controller.constants.ControllerConstants.CATEGORY;
+import static com.company.website.controller.constants.ControllerConstants.CATEGORY_DTO;
 import static com.company.website.controller.constants.ControllerConstants.REDIRECT_TO_CATEGORY;
+import static com.company.website.controller.constants.ControllerConstants.SUBGROUPS;
+import static com.company.website.controller.constants.ControllerConstants.SUBGROUP_DTO;
 
 /**
  * @author Dmitry Matrizaev
@@ -30,11 +32,12 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final SubgroupService subgroupService;
 
-    @GetMapping("/admin/{categoryUrl:^(?!favicon).+}")
+    @GetMapping("/admin/{categoryUrl}")
     public String viewCategory(@PathVariable final String categoryUrl, final SubgroupDTO subgroupDTO,
                                final Model model) {
-        final CategoryDTO categoryDTO = categoryService.findByUrl(categoryUrl);
-        return serveCategoryPage(categoryDTO, subgroupDTO, model);
+        model.addAttribute(SUBGROUP_DTO, subgroupDTO);
+        model.addAttribute(CATEGORY_DTO, categoryService.viewCategory(categoryUrl));
+        return CATEGORY;
     }
 
     @PostMapping("/admin/editCategory")
@@ -45,7 +48,7 @@ public class CategoryController {
             return serveCategoryPage(categoryDTO, subgroupDTO, model);
         }
         categoryService.save(categoryDTO);
-        model.addAttribute("category", categoryDTO);
+        model.addAttribute(CATEGORY_DTO, categoryDTO);
         return String.format(REDIRECT_TO_CATEGORY, categoryDTO.getUrl());
     }
 
@@ -53,14 +56,12 @@ public class CategoryController {
     public String addSubgroup(@Valid final SubgroupDTO subgroupDTO,
                               BindingResult result, @RequestParam final String categoryUrl,
                               final Model model) {
-        CategoryDTO categoryDTO;
         if (result.hasErrors()) {
-            categoryDTO = categoryService.findByUrl(categoryUrl);
+            final CategoryDTO categoryDTO = categoryService.findByUrl(categoryUrl);
             return serveCategoryPage(categoryDTO, subgroupDTO, model);
         }
-        categoryDTO = categoryService.findByUrl(categoryUrl);
-        subgroupService.save(subgroupDTO, categoryDTO);
-        model.addAttribute("subgroups", subgroupService.findAllByCategory(categoryDTO));
+        subgroupService.save(subgroupDTO, categoryUrl);
+        model.addAttribute(SUBGROUPS, subgroupService.findAllByCategoryUrl(categoryUrl));
         return String.format(REDIRECT_TO_CATEGORY, categoryUrl);
     }
 
@@ -70,12 +71,11 @@ public class CategoryController {
         return String.format(REDIRECT_TO_CATEGORY, categoryUrl);
     }
 
-    private String serveCategoryPage(CategoryDTO categoryDTO, SubgroupDTO subgroupDTO,
+    private String serveCategoryPage(final CategoryDTO categoryDTO, final SubgroupDTO subgroupDTO, final
                                      Model model) {
-        List<SubgroupDTO> subgroups = subgroupService.findAllByCategory(categoryDTO);
-        model.addAttribute("categoryDTO", categoryDTO);
-        model.addAttribute("subgroupDTO", subgroupDTO);
-        model.addAttribute("subgroups", subgroups);
+        model.addAttribute(CATEGORY_DTO, categoryDTO);
+        model.addAttribute(SUBGROUP_DTO, subgroupDTO);
+        model.addAttribute(SUBGROUPS, subgroupService.findAllByCategoryUrl(categoryDTO.getUrl()));
         return CATEGORY;
     }
 

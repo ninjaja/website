@@ -65,58 +65,57 @@ public class ImageService {
     private final SubgroupMapper subgroupMapper;
     private final CategoryMapper categoryMapper;
 
-    public void processImageOnWrite(MultipartFile file, ProjectDTO projectDTO) {
-        ImageDTO imageDTO = new ImageDTO();
+    public void processImageOnWrite(final MultipartFile file, final ProjectDTO projectDTO) {
+        final ImageDTO imageDTO = new ImageDTO();
         imageDTO.setTitle(adviceImageName(file));
-        String projectTitle = projectDTO.getTitle();
-        saveToStorage(imageDTO, file, projectTitle);
-        Project project = projectRepository.findByTitle(projectTitle);
+        final int projectId = projectDTO.getId();
+        saveToStorage(imageDTO, file, projectId);
+        final Project project = projectRepository.findByTitle(projectDTO.getTitle());
         Image image = imageMapper.copyFromDTO(imageDTO, new Image());
         image.setProject(project);
         imageRepository.save(image);
     }
 
-    public void processImagesOnWrite(MultipartFile[] files, ProjectDTO project) {
+    public void processImagesOnWrite(final MultipartFile[] files, final ProjectDTO project) {
         if (!files[0].isEmpty()) {
             Arrays.stream(files).forEach(file -> processImageOnWrite(file, project));
         }
     }
 
-    public List<ImageDTO> serveImagesOnRead(ProjectDTO project) {
+    public List<ImageDTO> serveImagesOnRead(final ProjectDTO project) {
         return findAllByProject(project).stream()
-                .peek(imageDTO -> imageDTO.setData(applyDataOnRead(imageDTO, project.getTitle())))
+                .peek(imageDTO -> imageDTO.setData(applyDataOnRead(imageDTO, project.getId())))
                 .collect(Collectors.toList());
     }
 
-    public Page<ImageDTO> serveImagesOnReadPaginated(ProjectDTO project, Pageable pageable) {
+    public Page<ImageDTO> serveImagesOnReadPaginated(final ProjectDTO project, final Pageable pageable) {
         final Page<ImageDTO> page = findAllByProjectPaginated(project, pageable);
         for (ImageDTO imageDTO : page) {
-            imageDTO.setData(applyDataOnRead(imageDTO, project.getTitle()));
-            setParents(imageDTO);
+            imageDTO.setData(applyDataOnRead(imageDTO, project.getId()));
+            setImageParents(imageDTO);
         }
         return page;
-/*
-        return (Page<ImageDTO>) findAllByProjectPaginated(project, pageable).stream()
-                .peek(imageDTO -> imageDTO.setData(applyDataOnRead(imageDTO, project.getTitle())))
-                .peek(imageDTO -> setParents(imageDTO));
-*/
     }
 
-    public void setParents(final ImageDTO imageDTO) {
+    public void setImageParents(final ImageDTO imageDTO) {
         final Image image = imageRepository.findByTitle(imageDTO.getTitle());
         final Project project = image.getProject();
         final ProjectDTO projectDTO = projectMapper.map(project);
+        setProjectParents(projectDTO, project);
+        imageDTO.setProject(projectDTO);
+    }
+
+    public void setProjectParents(final ProjectDTO projectDTO, final Project project) {
         final Subgroup subgroup = project.getSubgroup();
         final SubgroupDTO subgroupDTO = subgroupMapper.map(subgroup);
         final Category category = subgroup.getCategory();
         final CategoryDTO categoryDTO = categoryMapper.map(category);
         subgroupDTO.setCategory(categoryDTO);
         projectDTO.setSubgroup(subgroupDTO);
-        imageDTO.setProject(projectDTO);
     }
 
-    public String applyDataOnRead(ImageDTO image, String projectTitle) {
-        Path path = Paths.get(STORAGE_PATH + projectTitle + "/" + image.getTitle());
+    public String applyDataOnRead(final ImageDTO image, final int projectId) {
+        final Path path = Paths.get(STORAGE_PATH + projectId + "/" + image.getTitle());
         String output = null;
         try {
             InputStream is = Files.newInputStream(path);
@@ -128,9 +127,9 @@ public class ImageService {
         return output;
     }
 
-    private void saveToStorage(ImageDTO image, MultipartFile input, String projectName) {
-        String fileName = image.getTitle();
-        Path path = Paths.get(STORAGE_PATH + projectName + "/" + fileName);
+    private void saveToStorage(final ImageDTO image, final MultipartFile input, final int projectId) {
+        final String fileName = image.getTitle();
+        final Path path = Paths.get(STORAGE_PATH + projectId + "/" + fileName);
         try {
             Files.createDirectories(path.getParent());
             Files.write(path, processImageData(input));
@@ -139,23 +138,23 @@ public class ImageService {
         }
     }
 
-    public void removeImage(String imageTitle) {
-        Image image = imageRepository.findByTitle(imageTitle);
-        String fileName = image.getTitle();
-        String projectName = image.getProject().getTitle();
-        Path path = Paths.get(STORAGE_PATH + projectName + "/" + fileName);
+    public void removeImage(final String imageTitle) {
+        final Image image = imageRepository.findByTitle(imageTitle);
+        final String fileName = image.getTitle();
+        final int projectId = image.getProject().getId();
+        final Path path = Paths.get(STORAGE_PATH + projectId + "/" + fileName);
         try {
             Files.deleteIfExists(path);
             imageRepository.deleteByTitle(imageTitle);
-            LOGGER.info("File: {} was deleted", fileName);
+            LOGGER.info("File: {} was deleted from project: {}", fileName, image.getProject().getTitle());
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
     }
 
-    private byte[] processImageData(MultipartFile file) throws IOException {
+    private byte[] processImageData(final MultipartFile file) throws IOException {
         byte[] output;
-        String format = Objects.requireNonNull(file.getContentType()).split("/")[1];
+        final String format = Objects.requireNonNull(file.getContentType()).split("/")[1];
         long fileSize = file.getSize();
         if (isImageType(file)) {
             if (fileSize > MAX_FILE_SIZE && !format.equals(GIF)) {
@@ -169,10 +168,10 @@ public class ImageService {
         return output;
     }
 
-    private String adviceImageName(MultipartFile file) {
-        String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        String name = originalFileName.split("\\.")[0];
-        String fileExtension = originalFileName.split("\\.")[1];
+    private String adviceImageName(final MultipartFile file) {
+        final String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        final String name = originalFileName.split("\\.")[0];
+        final String fileExtension = originalFileName.split("\\.")[1];
         String result = originalFileName;
         if (imageRepository.existsByTitle(originalFileName)) {
             result = String.format("%s%s.%s", name, RandomStringUtils.randomAlphabetic(8), fileExtension);
@@ -180,16 +179,16 @@ public class ImageService {
         return result;
     }
 
-    private boolean isImageType(MultipartFile file) {
-        String type = Objects.requireNonNull(file.getContentType()).split("/")[0];
+    private boolean isImageType(final MultipartFile file) {
+        final String type = Objects.requireNonNull(file.getContentType()).split("/")[0];
         return type.equals("image");
     }
 
-    private byte[] resize(byte[] input, String format) throws IOException {
-        InputStream is = new ByteArrayInputStream(input);
-        BufferedImage bufferedImage = ImageIO.read(is);
-        BufferedImage resizedImage = Scalr.resize(bufferedImage, MAX_DIMENSION);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private byte[] resize(final byte[] input, final String format) throws IOException {
+        final InputStream is = new ByteArrayInputStream(input);
+        final BufferedImage bufferedImage = ImageIO.read(is);
+        final BufferedImage resizedImage = Scalr.resize(bufferedImage, MAX_DIMENSION);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(resizedImage, format, baos);
         return baos.toByteArray();
     }

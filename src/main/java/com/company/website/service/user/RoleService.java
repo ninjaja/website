@@ -1,8 +1,7 @@
 package com.company.website.service.user;
 
-import com.company.website.dto.RoleDTO;
+import com.company.website.model.Role;
 import com.company.website.repository.RoleRepository;
-import com.company.website.service.mapping.RoleMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +14,9 @@ import org.springframework.stereotype.Service;
 public class RoleService {
 
     private final RoleRepository repository;
-    private final RoleMapper mapper;
 
-    public RoleDTO findByName(String name) {
-        return mapper.map(repository.findByName(name));
+    public Role findByName(String name) {
+        return repository.findByName(name);
     }
 
 }

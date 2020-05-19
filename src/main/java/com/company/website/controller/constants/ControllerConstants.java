@@ -24,4 +24,16 @@ public final class ControllerConstants {
     public static final String USER_SUBGROUP = "user/userSubgroup";
     public static final String USER_PROJECT = "user/userProject";
 
+    public static final String CATEGORY_DTO = "categoryDTO";
+    public static final String SUBGROUP_DTO = "subgroupDTO";
+    public static final String PROJECT_DTO = "projectDTO";
+    public static final String IMAGE_DTO = "imageDTO";
+    public static final String USER_DTO = "userDTO";
+    public static final String CATEGORIES = "categories";
+    public static final String SUBGROUPS = "subgroups";
+    public static final String PROJECTS = "projects";
+    public static final String IMAGES = "images";
+    public static final String IMAGE_PAGE = "imagePage";
+
+
 }

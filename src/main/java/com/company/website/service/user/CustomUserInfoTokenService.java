@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2RestOperations;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -85,8 +84,7 @@ public class CustomUserInfoTokenService implements ResourceServerTokenServices {
         User user = null;
         if (map.containsKey("sub")) {
             String googleEmail = (String) map.get("email");
-            user = userRepository.findByLogin(googleEmail).orElseThrow(() ->
-                    new UsernameNotFoundException("Login " + googleEmail + " not found"));
+            user = userRepository.findByLogin(googleEmail).orElse(null);
             if (Objects.isNull(user)) {
                 user = new User();
                 Role role = roleRepository.findByName("USER");

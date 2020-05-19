@@ -1,22 +1,22 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${projectDTO.title}"></title>
+    <title th:text="${imagePage.content[0].project.title}"></title>
     <div th:replace="header :: custom_header"></div>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h3 class="project-title" th:text="${projectDTO.title}"></h3>
-            <div class="project-description" th:text="${projectDTO.description}"></div>
+            <h3 class="project-title" th:text="${imagePage.content[0].project.title}"></h3>
+            <div class="project-description" th:text="${imagePage.content[0].project.description}"></div>
             <div th:if="${#lists.isEmpty(imagePage.content)}">
                 <span> Images will be added soon</span>
             </div>
             <img th:each="imageDTO : ${imagePage.content}" class="project-images" th:src="@{'data:image/jpeg;base64,' + ${imageDTO.data}}" alt=""/>
             <!-- pagination -->
             <nav aria-label="Pagination" th:if="${imagePage.totalPages gt 0}">
-                <ul class="pagination pagination-lg justify-content-center font-weight-medium">
+                <ul class="pagination pagination-lg justify-content-center font-weight-medium flex-wrap">
                     <li class="page-item" th:classappend="${imagePage.number eq 0} ? 'disabled'">
                         <a class="page-link"
                            th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}

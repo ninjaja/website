@@ -21,7 +21,7 @@ public interface SubgroupRepository extends CrudRepository<Subgroup, Integer>, C
     @Override
     boolean existsByUrl(String url);
 
-    List<Subgroup> findAllByCategoryTitle(String categoryTitle);
+    List<Subgroup> findAllByCategoryUrl(String categoryUrl);
 
     Subgroup findByUrl(String url);
 

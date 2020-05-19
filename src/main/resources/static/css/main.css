@@ -16,9 +16,18 @@ body .container {
     padding: 100px 15px 60px;
 }
 
+body .container-album {
+    padding: 20px 15px 60px;
+}
+
+.card-image {
+    object-fit: cover;
+}
+
 .carousel-inner img {
     height: 800px;
     max-height: 800px;
+    object-fit: cover;
 }
 
 .page-link {

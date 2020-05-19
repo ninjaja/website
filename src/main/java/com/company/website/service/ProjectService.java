@@ -1,24 +1,22 @@
 package com.company.website.service;
 
-import com.company.website.dto.CategoryDTO;
 import com.company.website.dto.ImageDTO;
 import com.company.website.dto.ProjectDTO;
-import com.company.website.dto.SubgroupDTO;
-import com.company.website.model.Category;
 import com.company.website.model.Project;
-import com.company.website.model.Subgroup;
 import com.company.website.repository.ProjectRepository;
 import com.company.website.repository.SubgroupRepository;
-import com.company.website.service.mapping.CategoryMapper;
 import com.company.website.service.mapping.ProjectMapper;
-import com.company.website.service.mapping.SubgroupMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -30,35 +28,38 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ProjectService {
 
-    private final ProjectRepository projectRepository;
     private final SubgroupRepository subgroupRepository;
+    private final ProjectRepository projectRepository;
     private final ImageService imageService;
     private final ProjectMapper projectMapper;
-    private final SubgroupMapper subgroupMapper;
-    private final CategoryMapper categoryMapper;
 
-    public Iterable<ProjectDTO> findAllBySubgroup(SubgroupDTO subgroup) {
-        return projectRepository.findAllBySubgroupTitle(subgroup.getTitle()).stream()
+    public List<ProjectDTO> findAllBySubgroupUrl(final String subgroupUrl) {
+        return projectRepository.findAllBySubgroupUrl(subgroupUrl).stream()
                 .map(projectMapper::map)
                 .collect(Collectors.toList());
     }
 
-    public void save(ProjectDTO projectDTO, SubgroupDTO subgroupDTO) {
+    public void save(final ProjectDTO projectDTO, final String subgroupUrl) {
         Project project = projectRepository.findById(projectDTO.getId()).orElseGet(Project::new);
         project = projectMapper.copyFromDto(projectDTO, project);
-        project.setSubgroup(subgroupRepository.findByTitle(subgroupDTO.getTitle()));
+        project.setSubgroup(subgroupRepository.findByUrl(subgroupUrl));
         projectRepository.save(project);
     }
 
-    public void deleteByTitle(String title) {
+    public void save(final ProjectDTO projectDTO, final String subgroupUrl, final MultipartFile[] files) {
+        save(projectDTO, subgroupUrl);
+        imageService.processImagesOnWrite(files, projectDTO);
+    }
+
+    public void deleteByTitle(final String title) {
         projectRepository.removeByTitle(title);
     }
 
-    public ProjectDTO findByUrl(String url) {
+    public ProjectDTO findByUrl(final String url) {
         return projectMapper.map(projectRepository.findByUrl(url));
     }
 
-    public ProjectDTO findById(Integer id) {
+    public ProjectDTO findById(final Integer id) {
         return projectMapper.map(projectRepository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
@@ -71,26 +72,53 @@ public class ProjectService {
 
     public Iterable<ProjectDTO> findAllWithImages() {
         List<ProjectDTO> list = new ArrayList<>();
-        projectRepository.findAll().forEach(project -> {
-            ProjectDTO projectDTO = projectMapper.map(project);
-            if (projectDTO.isHasImages()) {
-                ImageDTO imageDTO = projectMapper.getAnyImage(project);
-                imageDTO.setData(imageService.applyDataOnRead(imageDTO, projectDTO.getTitle()));
-                projectDTO.setFirstImage(imageDTO);
-                setParents(projectDTO, project);
-                list.add(projectDTO);
-            }
-        });
+        projectRepository.findAll().forEach(project -> populateImages(list, project));
         return list;
     }
 
-    private void setParents(final ProjectDTO projectDTO, final Project project) {
-        final Subgroup subgroup = project.getSubgroup();
-        final SubgroupDTO subgroupDTO = subgroupMapper.map(subgroup);
-        final Category category = subgroup.getCategory();
-        final CategoryDTO categoryDTO = categoryMapper.map(category);
-        subgroupDTO.setCategory(categoryDTO);
-        projectDTO.setSubgroup(subgroupDTO);
+    public List<ProjectDTO> findAllWithImagesByCategoryUrl(final String categoryUrl) {
+        List<ProjectDTO> list = new ArrayList<>();
+        subgroupRepository.findAllByCategoryUrl(categoryUrl).stream()
+                .flatMap(subgroup -> projectRepository.findAllBySubgroupTitle(subgroup.getTitle()).stream())
+                .forEach(project -> populateImages(list, project));
+        return list;
     }
+
+    public List<ProjectDTO> findAllWithImagesBySubgroupUrl(final String subgroupUrl) {
+        List<ProjectDTO> list = new ArrayList<>();
+        projectRepository.findAllBySubgroupUrl(subgroupUrl)
+                .forEach(project -> populateImages(list, project));
+        return list;
+    }
+
+    private void populateImages(final List<ProjectDTO> list, final Project project) {
+        final ProjectDTO projectDTO = projectMapper.map(project);
+        if (projectDTO.isHasImages()) {
+            final ImageDTO imageDTO = projectMapper.getAnyImage(project);
+            imageDTO.setData(imageService.applyDataOnRead(imageDTO, projectDTO.getId()));
+            projectDTO.setFirstImage(imageDTO);
+            imageService.setProjectParents(projectDTO, project);
+            list.add(projectDTO);
+        }
+    }
+
+    public Page<ImageDTO> serveProjectToUser(final String projectUrl, final Optional<Integer> page) {
+        final ProjectDTO projectDTO = findByUrl(projectUrl);
+        final Project project = projectRepository.findByUrl(projectUrl);
+        imageService.setProjectParents(projectDTO, project);
+        final int currentPage = page.orElse(1);
+        final PageRequest pageable = PageRequest.of(currentPage - 1, 1);
+        return imageService.serveImagesOnReadPaginated(projectDTO, pageable);
+    }
+
+    public ProjectDTO viewProject(final String projectUrl) {
+        final ProjectDTO projectDTO = findByUrl(projectUrl);
+        projectDTO.setImages(imageService.serveImagesOnRead(projectDTO));
+        final Project project = projectRepository.findByUrl(projectUrl);
+        imageService.setProjectParents(projectDTO, project);
+        return projectDTO;
+    }
+
+
 
 }

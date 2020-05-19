@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 
 import static com.company.website.controller.constants.ControllerConstants.ADMIN_HOME;
+import static com.company.website.controller.constants.ControllerConstants.CATEGORIES;
+import static com.company.website.controller.constants.ControllerConstants.CATEGORY_DTO;
 import static com.company.website.controller.constants.ControllerConstants.REDIRECT_TO_ADMIN;
 
 /**
@@ -46,8 +48,8 @@ public class AdminMainController {
     }
 
     private String serveAdminPage(CategoryDTO categoryDTO, Model model) {
-        model.addAttribute("categoryDTO", categoryDTO);
-        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute(CATEGORY_DTO, categoryDTO);
+        model.addAttribute(CATEGORIES, categoryService.findAll());
         return ADMIN_HOME;
     }
 

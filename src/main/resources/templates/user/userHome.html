@@ -20,7 +20,8 @@
                     </div>
                     <div class="carousel-item" th:each="projectDTO, iter : ${projects}"
                          th:if="${!iter.first} and ${projectDTO.firstImage.data != null}">
-                        <img class="d-block w-100" th:src="@{'data:image/jpeg;base64,' + ${projectDTO.firstImage.data}}" alt="">
+                        <img class="d-block w-100"
+                             th:src="@{'data:image/jpeg;base64,' + ${projectDTO.firstImage.data}}" alt="">
                         <div class="carousel-caption">
                             <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
                 (categoryUrl = ${projectDTO.subgroup.category.url}, subgroupUrl = ${projectDTO.subgroup.url}, projectUrl = ${projectDTO.url})}"

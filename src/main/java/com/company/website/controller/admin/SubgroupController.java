@@ -1,10 +1,7 @@
 package com.company.website.controller.admin;
 
-import com.company.website.dto.CategoryDTO;
 import com.company.website.dto.ProjectDTO;
 import com.company.website.dto.SubgroupDTO;
-import com.company.website.service.CategoryService;
-import com.company.website.service.ImageService;
 import com.company.website.service.ProjectService;
 import com.company.website.service.SubgroupService;
 import lombok.AllArgsConstructor;
@@ -20,7 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 
 import static com.company.website.controller.constants.ControllerConstants.ADMIN_SUBGROUP;
+import static com.company.website.controller.constants.ControllerConstants.PROJECTS;
+import static com.company.website.controller.constants.ControllerConstants.PROJECT_DTO;
 import static com.company.website.controller.constants.ControllerConstants.REDIRECT_SUBGROUP;
+import static com.company.website.controller.constants.ControllerConstants.SUBGROUP_DTO;
 
 /**
  * @author Dmitry Matrizaev
@@ -30,18 +30,14 @@ import static com.company.website.controller.constants.ControllerConstants.REDIR
 @AllArgsConstructor
 public class SubgroupController {
 
-    private final CategoryService categoryService;
     private final SubgroupService subgroupService;
     private final ProjectService projectService;
-    private final ImageService imageService;
 
     @GetMapping("/admin/{categoryUrl}/{subgroupUrl}")
     public String viewSubgroup(@PathVariable final String categoryUrl, @PathVariable final String subgroupUrl,
                                final ProjectDTO projectDTO,
                                final Model model) {
-        final CategoryDTO categoryDTO = categoryService.findByUrl(categoryUrl);
-        final SubgroupDTO subgroupDTO = subgroupService.findByUrl(subgroupUrl);
-        return serveSubgroupPage(categoryDTO, subgroupDTO, projectDTO,model);
+        return serveSubgroupPage(subgroupUrl, projectDTO, model);
     }
 
     @PostMapping("/admin/editSubgroup")
@@ -49,15 +45,12 @@ public class SubgroupController {
                                final BindingResult result, final ProjectDTO projectDTO,
                                @RequestParam final String categoryUrl,
                                final Model model) {
-        CategoryDTO categoryDTO;
         if (result.hasErrors()) {
-            categoryDTO = categoryService.findByUrl(categoryUrl);
             subgroupService.copyDTOValuesOnEditError(subgroupDTO);
-            return serveSubgroupPage(categoryDTO, subgroupDTO, projectDTO, model);
+            return serveSubgroupPage(subgroupDTO.getUrl(), projectDTO, model);
         }
-        categoryDTO = categoryService.findByUrl(categoryUrl);
-        subgroupService.save(subgroupDTO, categoryDTO);
-        model.addAttribute("subgroupDTO", subgroupDTO);
+        subgroupService.save(subgroupDTO, categoryUrl);
+        model.addAttribute(SUBGROUP_DTO, subgroupDTO);
         return String.format(REDIRECT_SUBGROUP, categoryUrl, subgroupDTO.getUrl());
     }
 
@@ -66,16 +59,11 @@ public class SubgroupController {
                              BindingResult result, @RequestParam final MultipartFile[] files,
                              @RequestParam final String categoryUrl, @RequestParam final String subgroupUrl,
                              final Model model) {
-        SubgroupDTO subgroupDTO;
         if (result.hasErrors()) {
-            final CategoryDTO categoryDTO = categoryService.findByUrl(categoryUrl);
-            subgroupDTO = subgroupService.findByUrl(subgroupUrl);
-            return serveSubgroupPage(categoryDTO, subgroupDTO, projectDTO, model);
+            return serveSubgroupPage(subgroupUrl, projectDTO, model);
         }
-        subgroupDTO = subgroupService.findByUrl(subgroupUrl);
-        projectService.save(projectDTO, subgroupDTO);
-        imageService.processImagesOnWrite(files, projectDTO);
-        model.addAttribute("projects", projectService.findAllBySubgroup(subgroupDTO));
+        projectService.save(projectDTO, subgroupUrl, files);
+        model.addAttribute(PROJECTS, projectService.findAllBySubgroupUrl(subgroupUrl));
         return String.format(REDIRECT_SUBGROUP, categoryUrl, subgroupUrl);
     }
 
@@ -86,12 +74,11 @@ public class SubgroupController {
         return String.format(REDIRECT_SUBGROUP, categoryUrl, subgroupUrl);
     }
 
-    private String serveSubgroupPage(CategoryDTO categoryDTO, SubgroupDTO subgroupDTO, ProjectDTO projectDTO,
-                                     Model model) {
-        model.addAttribute("categoryDTO", categoryDTO);
-        model.addAttribute("subgroupDTO", subgroupDTO);
-        model.addAttribute("projectDTO", projectDTO);
-        model.addAttribute("projects", projectService.findAllBySubgroup(subgroupDTO));
+    private String serveSubgroupPage(final String subgroupUrl, final ProjectDTO projectDTO, Model model) {
+        final SubgroupDTO subgroupDTO = subgroupService.viewSubgroup(subgroupUrl);
+        model.addAttribute(SUBGROUP_DTO, subgroupDTO);
+        model.addAttribute(PROJECT_DTO, projectDTO);
+        model.addAttribute(PROJECTS, subgroupDTO.getProjects());
         return ADMIN_SUBGROUP;
     }
 

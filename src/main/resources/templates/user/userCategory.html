@@ -8,41 +8,32 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h3 class="project-title" th:text="${categoryDTO.title}"></h3>
-            <div class="project-description" th:text="${categoryDTO.description}"></div>
-
-
-            <div>
-                <div><b>Subgroups:</b></div>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>Title</th>
-                        <th>URL</th>
-                        <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${#lists.isEmpty(subgroups)}">
-                        <td colspan="2"> No subgroups available</td>
-                    </tr>
-                    <tr th:each="subgroup : ${subgroups}">
-                        <td><span th:text="${subgroup.id}"> id </span></td>
-                        <td><span th:text="${subgroup.title}"> Title </span></td>
-                        <td>
-                            <a th:href="@{/{categoryUrl}/{subgroupUrl}(categoryUrl = ${categoryDTO.url}, subgroupUrl = ${subgroup.url})}">
-                                <span th:text="${subgroup.url}"> URL </span>
-                            </a>
-                        </td>
-                        <td><span th:text="${subgroup.description}"> Description </span></td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="btn-group dropright project-title">
+                <button type="button" th:text="${categoryDTO.title}" class="btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu">
+                    <a th:each="subgroup : ${categoryDTO.subgroups}" class="dropdown-item" th:href="@{/{categoryUrl}/{subgroupUrl}
+                (categoryUrl = ${categoryDTO.url}, subgroupUrl = ${subgroup.url})}"
+                       th:text="${subgroup.title}"></a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">All</a>
+                </div>
             </div>
 
-
-
+            <div class="project-description" th:text="${categoryDTO.description}"></div>
+        </div>
+        <div th:each="projectDTO : ${projects}" class="col-md-4 card-group" id="content-box">
+            <div class="card mb-4 shadow-sm" id="content-wrapper">
+                <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
+                (categoryUrl = ${projectDTO.subgroup.category.url}, subgroupUrl = ${projectDTO.subgroup.url}, projectUrl = ${projectDTO.url})}">
+                    <img class="card-img-top card-image"
+                         th:src="@{'data:image/jpeg;base64,' + ${projectDTO.firstImage.data}}" alt="">
+                </a>
+                <div class="card-body bg-light">
+                    <p class="card-title" th:text="${projectDTO.title}"></p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

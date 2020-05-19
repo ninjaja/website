@@ -1,9 +1,10 @@
 package com.company.website.service.user;
 
-import com.company.website.dto.RoleDTO;
 import com.company.website.dto.UserDTO;
+import com.company.website.model.Role;
 import com.company.website.model.User;
 import com.company.website.repository.UserRepository;
+import com.company.website.service.mapping.RoleMapper;
 import com.company.website.service.mapping.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,17 +22,21 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository repository;
-    private final UserMapper mapper;
+    private final RoleService roleService;
+    private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
     private final PasswordEncoder passwordEncoder;
 
     public Optional<User> findByLogin(String login) {
         return repository.findByLogin(login);
     }
 
-    public User save(UserDTO userDTO, RoleDTO roleDTO) {
-        userDTO.setRoles(Collections.singleton(roleDTO));
+    public User save(UserDTO userDTO) {
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        return repository.save(mapper.map(userDTO));
+        final User user = userMapper.map(userDTO);
+        Role role = roleService.findByName("USER");
+        user.setRoles(Collections.singleton(role));
+        return repository.save(user);
     }
 
     public boolean existsByLogin(String login) {

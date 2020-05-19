@@ -2,9 +2,11 @@ package com.company.website.service;
 
 import com.company.website.dto.CategoryDTO;
 import com.company.website.dto.SubgroupDTO;
+import com.company.website.model.Category;
 import com.company.website.model.Subgroup;
 import com.company.website.repository.CategoryRepository;
 import com.company.website.repository.SubgroupRepository;
+import com.company.website.service.mapping.CategoryMapper;
 import com.company.website.service.mapping.SubgroupMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,18 +27,20 @@ public class SubgroupService {
 
     private final SubgroupRepository subgroupRepository;
     private final CategoryRepository categoryRepository;
+    private final ProjectService projectService;
+    private final CategoryMapper categoryMapper;
     private final SubgroupMapper subgroupMapper;
 
-    public List<SubgroupDTO> findAllByCategory(CategoryDTO category) {
-        return subgroupRepository.findAllByCategoryTitle(category.getTitle()).stream()
+    public List<SubgroupDTO> findAllByCategoryUrl(final String categoryUrl) {
+        return subgroupRepository.findAllByCategoryUrl(categoryUrl).stream()
                 .map(subgroupMapper::map)
                 .collect(Collectors.toList());
     }
 
-    public void save(SubgroupDTO subgroupDTO, CategoryDTO categoryDTO) {
+    public void save(final SubgroupDTO subgroupDTO, final String categoryUrl) {
         Subgroup subgroup = subgroupRepository.findById(subgroupDTO.getId()).orElseGet(Subgroup::new);
         subgroup = subgroupMapper.copyFromDto(subgroupDTO, subgroup);
-        subgroup.setCategory(categoryRepository.findByTitle(categoryDTO.getTitle()));
+        subgroup.setCategory(categoryRepository.findByUrl(categoryUrl));
         subgroupRepository.save(subgroup);
     }
 
@@ -57,6 +61,26 @@ public class SubgroupService {
         subgroupDTO.setTitle(oldSubgroupDTO.getTitle());
         subgroupDTO.setUrl(oldSubgroupDTO.getUrl());
         subgroupDTO.setDescription(oldSubgroupDTO.getDescription());
+    }
+
+    public SubgroupDTO viewSubgroup(final String subgroupUrl) {
+        final SubgroupDTO subgroupDTO = findByUrl(subgroupUrl);
+        final Subgroup subgroup = subgroupRepository.findByUrl(subgroupUrl);
+        subgroupDTO.setCategory(categoryMapper.map(subgroup.getCategory()));
+        subgroupDTO.setProjects(projectService.findAllBySubgroupUrl(subgroupUrl));
+        return subgroupDTO;
+    }
+
+    public SubgroupDTO viewSubgroupUserPages(final String subgroupUrl) {
+        final SubgroupDTO subgroupDTO = findByUrl(subgroupUrl);
+        final Subgroup subgroup = subgroupRepository.findByUrl(subgroupUrl);
+        final Category category = subgroup.getCategory();
+        final CategoryDTO categoryDTO = categoryMapper.map(category);
+        final List<SubgroupDTO> subgroups = findAllByCategoryUrl(categoryDTO.getUrl());
+        categoryDTO.setSubgroups(subgroups);
+        subgroupDTO.setCategory(categoryDTO);
+        subgroupDTO.setProjects(projectService.findAllWithImagesBySubgroupUrl(subgroupUrl));
+        return subgroupDTO;
     }
 
 }

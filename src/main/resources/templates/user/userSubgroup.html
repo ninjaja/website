@@ -1,15 +1,64 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${subgroup.title}"></title>
+    <title th:text="${subgroupDTO.title}"></title>
     <div th:replace="header :: custom_header"></div>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1 th:text="${subgroup.title}"></h1>
-            <h2 th:text="${subgroup.description}"></h2>
+            <div class="btn-group dropleft project-title">
+                <button type="button" th:text="${subgroupDTO.title}" class="btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu">
+                    <a th:each="subgroup : ${subgroupDTO.category.subgroups}" class="dropdown-item"
+                       th:href="@{/{categoryUrl}/{subgroupUrl}
+                (categoryUrl = ${subgroupDTO.category.url}, subgroupUrl = ${subgroup.url})}"
+                       th:text="${subgroup.title}"></a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" th:text="${subgroupDTO.category.title}" th:href="@{/{categoryUrl}
+                (categoryUrl = ${subgroupDTO.category.url})}"></a>
+                </div>
+            </div>
+            <div class="project-description" th:text="${subgroupDTO.description}"></div>
+        </div>
+        <div th:each="projectDTO : ${projects}" class="col-md-4 card-group">
+            <div class="card mb-4 shadow-sm">
+                <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
+                (categoryUrl = ${projectDTO.subgroup.category.url}, subgroupUrl = ${projectDTO.subgroup.url}, projectUrl = ${projectDTO.url})}">
+                    <img class="card-img-top card-image"
+                         th:src="@{'data:image/jpeg;base64,' + ${projectDTO.firstImage.data}}" alt="">
+                </a>
+                <div class="card-body bg-light">
+                    <p class="card-title" th:text="${projectDTO.title}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:insert="footer :: custom_footer"></div>
+</body>
+</html>
+
+
+
+
+<!--
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${subgroupDTO.title}"></title>
+    <div th:replace="header :: custom_header"></div>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 th:text="${subgroupDTO.title}"></h1>
+            <h2 th:text="${subgroupDTO.description}"></h2>
 
             <div>
                 <div><b>Projects:</b></div>
@@ -23,14 +72,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${projects.empty}">
+                    <tr th:if="${#lists.isEmpty(projects)}">
                         <td colspan="2"> No projects available</td>
                     </tr>
                     <tr th:each="project : ${projects}">
                         <td><span th:text="${project.id}"> id </span></td>
                         <td><span th:text="${project.title}"> Title </span></td>
                         <td>
-                            <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}(categoryUrl = ${category.url}, subgroupUrl = ${subgroup.url}, projectUrl = ${project.url})}">
+                            <a
+                                    th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}(categoryUrl = ${subgroupDTO.category.url}, subgroupUrl = ${subgroupDTO.url}, projectUrl = ${project.url})}">
                                 <span th:text="${project.url}"> URL </span>
                             </a>
                         </td>
@@ -45,4 +95,4 @@
 
 <div th:insert="footer :: custom_footer"></div>
 </body>
-</html>
+</html>-->

@@ -45,10 +45,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${#lists.isEmpty(subgroups)}">
+                    <tr th:if="${#lists.isEmpty(categoryDTO.subgroups)}">
                         <td colspan="2"> No subgroups available</td>
                     </tr>
-                    <tr th:each="subgroup : ${subgroups}">
+                    <tr th:each="subgroup : ${categoryDTO.subgroups}">
                         <td><span th:text="${subgroup.title}"> Title </span></td>
                         <td>
                             <a th:href="@{/admin/{categoryUrl}/{subgroupUrl}(categoryUrl = ${categoryDTO.url},

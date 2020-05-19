@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Set;
+import java.util.List;
 
 /**
  *
@@ -37,7 +37,7 @@ public class ProjectDTO implements CustomDTO {
 
     private SubgroupDTO subgroup;
 
-    private Set<ImageDTO> images;
+    private List<ImageDTO> images;
 
     private ImageDTO firstImage;
 

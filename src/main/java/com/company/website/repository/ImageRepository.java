@@ -3,8 +3,10 @@ package com.company.website.repository;
 import com.company.website.model.Image;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.CrudRepository;
 
+import javax.persistence.QueryHint;
 import java.util.List;
 
 /**
@@ -14,10 +16,13 @@ import java.util.List;
  */
 public interface ImageRepository extends CrudRepository<Image, Integer> {
 
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<Image> findAllByProjectTitle(String projectTitle, Pageable pageable);
 
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     List<Image> findAllByProjectTitle(String projectTitle);
 
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Image findByTitle(String title);
 
     boolean existsByTitle(String title);

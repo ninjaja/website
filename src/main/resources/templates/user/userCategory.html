@@ -3,8 +3,10 @@
 <head>
     <title th:text="${categoryDTO.title}"></title>
     <div th:replace="header :: custom_header"></div>
+
+
 </head>
-<body>
+<body class="no-scrollbar">
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -23,8 +25,8 @@
 
             <div class="project-description" th:text="${categoryDTO.description}"></div>
         </div>
-        <div th:each="projectDTO : ${projects}" class="col-md-4 card-group" id="content-box">
-            <div class="card mb-4 shadow-sm" id="content-wrapper">
+        <div th:each="projectDTO : ${projects}" class="col-md-4 card-group infinite-scroll">
+            <div class="card mb-4 shadow-sm">
                 <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
                 (categoryUrl = ${projectDTO.subgroup.category.url}, subgroupUrl = ${projectDTO.subgroup.url}, projectUrl = ${projectDTO.url})}">
                     <img class="card-img-top card-image"

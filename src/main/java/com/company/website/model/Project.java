@@ -4,7 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,6 +27,8 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Project implements CustomEntity {
 
     @Id
@@ -40,11 +45,13 @@ public class Project implements CustomEntity {
 
     @ManyToOne
     @JoinColumn(name = "subgroup_id")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Subgroup subgroup;
 
     @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Image> images;
 
     public Project(String title, String url, String description, Subgroup subgroup) {

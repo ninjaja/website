@@ -2,7 +2,10 @@ package com.company.website.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +23,8 @@ import javax.validation.constraints.Size;
 @Entity
 @Data
 @NoArgsConstructor
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Image {
 
     @Id
@@ -32,6 +37,7 @@ public class Image {
 
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Project project;
 
     public Image(String title, Project project) {

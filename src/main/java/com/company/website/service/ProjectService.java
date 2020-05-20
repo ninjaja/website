@@ -48,6 +48,7 @@ public class ProjectService {
 
     public void save(final ProjectDTO projectDTO, final String subgroupUrl, final MultipartFile[] files) {
         save(projectDTO, subgroupUrl);
+        projectDTO.setId(projectRepository.findByTitle(projectDTO.getTitle()).getId());
         imageService.processImagesOnWrite(files, projectDTO);
     }
 

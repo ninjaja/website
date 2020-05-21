@@ -4,6 +4,8 @@ import com.company.website.model.Role;
 import org.springframework.data.repository.CrudRepository;
 
 /**
+ * Repository for Role entities
+ *
  * @author Dmitry Matrizaev
  * @since 21.04.2020
  */

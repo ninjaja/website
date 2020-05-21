@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
+ * Entity bean for user roles
  *
  * @author Dmitry Matrizaev
  * @since 21.04.2020

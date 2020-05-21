@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import java.util.Set;
 
 /**
+ * DTO for User entities
  *
  * @author Dmitry Matrizaev
  * @since 20.04.2020

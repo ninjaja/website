@@ -1,6 +1,8 @@
 package com.company.website.exception;
 
 /**
+ * Exception to indicate that uploaded file is not an image
+ *
  * @author Dmitry Matrizaev
  * @since 27.04.2020
  */

@@ -23,6 +23,8 @@ import static com.company.website.controller.constants.ControllerConstants.PROJE
 import static com.company.website.controller.constants.ControllerConstants.REDIRECT_PROJECT;
 
 /**
+ * Admin console Projects page controller
+ *
  * @author Dmitry Matrizaev
  * @since 23.04.2020
  */

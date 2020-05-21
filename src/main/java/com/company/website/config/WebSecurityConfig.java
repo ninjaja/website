@@ -5,7 +5,6 @@ import com.company.website.repository.UserRepository;
 import com.company.website.service.user.CustomUserInfoTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -26,11 +25,14 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilt
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.context.request.RequestContextListener;
 
 import javax.servlet.Filter;
 import javax.sql.DataSource;
 
 /**
+ * Spring Security configuration
+ *
  * @author Dmitry Matrizaev
  * @since 20.04.2020
  */
@@ -43,9 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final DataSource dataSource;
     private final UserDetailsService customUserDetailsService;
-
-    @Qualifier("oAuth2ClientConfiguration")
-    private final OAuth2ClientContext oAuth2ClientContext;
+    private final OAuth2ClientContext oAuth2ClientConfiguration;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final EncoderConfig encoderConfig;
@@ -65,6 +65,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public RequestContextListener requestContextListener() {
+        return new RequestContextListener();
+    }
+
+    @Bean
     @ConfigurationProperties("security.oauth2.client")
     public AuthorizationCodeResourceDetails google() {
         return new AuthorizationCodeResourceDetails();
@@ -79,7 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private Filter ssoFilter() {
         OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter(
                 "/login/google");
-        OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oAuth2ClientContext);
+        OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oAuth2ClientConfiguration);
         googleFilter.setRestTemplate(googleTemplate);
         CustomUserInfoTokenService tokenServices =
                 new CustomUserInfoTokenService(googleResource().getUserInfoUri(), google().getClientId());

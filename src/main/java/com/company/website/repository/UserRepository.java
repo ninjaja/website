@@ -7,6 +7,8 @@ import java.util.Optional;
 
 /**
  *
+ * Repository for User entities
+ *
  * @author Dmitry Matrizaev
  * @since 20.04.2020
  */

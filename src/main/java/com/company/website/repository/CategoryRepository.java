@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import javax.persistence.QueryHint;
 
 /**
+ * Repository for Category entities
  *
  * @author Dmitry Matrizaev
  * @since 20.04.2020

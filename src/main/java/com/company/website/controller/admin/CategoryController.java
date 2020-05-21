@@ -22,6 +22,8 @@ import static com.company.website.controller.constants.ControllerConstants.SUBGR
 import static com.company.website.controller.constants.ControllerConstants.SUBGROUP_DTO;
 
 /**
+ * Admin console Categories page controller
+ *
  * @author Dmitry Matrizaev
  * @since 22.04.2020
  */
@@ -53,9 +55,8 @@ public class CategoryController {
     }
 
     @PostMapping("/admin/addSubgroup")
-    public String addSubgroup(@Valid final SubgroupDTO subgroupDTO,
-                              BindingResult result, @RequestParam final String categoryUrl,
-                              final Model model) {
+    public String addSubgroup(@Valid final SubgroupDTO subgroupDTO, BindingResult result,
+                              @RequestParam final String categoryUrl, final Model model) {
         if (result.hasErrors()) {
             final CategoryDTO categoryDTO = categoryService.findByUrl(categoryUrl);
             return serveCategoryPage(categoryDTO, subgroupDTO, model);

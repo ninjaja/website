@@ -1,7 +1,6 @@
 package com.company.website.controller.user;
 
 import com.company.website.dto.UserDTO;
-import com.company.website.service.user.RoleService;
 import com.company.website.service.user.UserService;
 import com.company.website.validation.UsernameValidator;
 import lombok.AllArgsConstructor;
@@ -18,6 +17,8 @@ import static com.company.website.controller.constants.ControllerConstants.REGIS
 import static com.company.website.controller.constants.ControllerConstants.USER_DTO;
 
 /**
+ * New user registration controller. Initial admin should be created as a regular user and his role should be changed
+ * from DB manually
  *
  * @author Dmitry Matrizaev
  * @since 20.04.2020
@@ -27,7 +28,6 @@ import static com.company.website.controller.constants.ControllerConstants.USER_
 public class RegistrationController {
 
     private final UserService userService;
-    private final RoleService roleService;
     private final UsernameValidator usernameValidator;
 
     @GetMapping("/registration")

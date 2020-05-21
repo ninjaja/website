@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
+ * DTO for Project entities
  *
  * @author Dmitry Matrizaev
  * @since 20.04.2020
@@ -34,6 +35,8 @@ public class ProjectDTO implements CustomDTO {
 
     @Size(max = 1000)
     private String description;
+
+    private String dateCreated;
 
     private SubgroupDTO subgroup;
 

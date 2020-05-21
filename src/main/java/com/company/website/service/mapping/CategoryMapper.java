@@ -5,6 +5,8 @@ import com.company.website.model.Category;
 import org.springframework.stereotype.Component;
 
 /**
+ * Mapper for Category entities and DTO
+ *
  * @author Dmitry Matrizaev
  * @since 05.05.2020
  */
@@ -29,11 +31,10 @@ public class CategoryMapper {
         return dto;
     }
 
-    public Category copyFromDto(final CategoryDTO dto, final Category category) {
+    public void copyFromDto(final CategoryDTO dto, final Category category) {
         category.setTitle(dto.getTitle());
         category.setUrl(dto.getUrl());
         category.setDescription(dto.getDescription());
-        return category;
     }
 
 }

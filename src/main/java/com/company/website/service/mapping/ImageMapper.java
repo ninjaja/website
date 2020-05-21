@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
+ * Mapper for Image entities and DTO
+ *
  * @author Dmitry Matrizaev
  * @since 05.05.2020
  */

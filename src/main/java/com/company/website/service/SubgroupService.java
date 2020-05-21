@@ -10,13 +10,15 @@ import com.company.website.service.mapping.CategoryMapper;
 import com.company.website.service.mapping.SubgroupMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Service layer for subgroups
+ *
  * @author Dmitry Matrizaev
  * @since 04.05.2020
  */
@@ -38,21 +40,21 @@ public class SubgroupService {
     }
 
     public void save(final SubgroupDTO subgroupDTO, final String categoryUrl) {
-        Subgroup subgroup = subgroupRepository.findById(subgroupDTO.getId()).orElseGet(Subgroup::new);
-        subgroup = subgroupMapper.copyFromDto(subgroupDTO, subgroup);
+        final Subgroup subgroup = subgroupRepository.findById(subgroupDTO.getId()).orElseGet(Subgroup::new);
+        subgroupMapper.copyFromDto(subgroupDTO, subgroup);
         subgroup.setCategory(categoryRepository.findByUrl(categoryUrl));
         subgroupRepository.save(subgroup);
     }
 
-    public void deleteByUrl(String url) {
+    public void deleteByUrl(final String url) {
         subgroupRepository.removeByUrl(url);
     }
 
-    public SubgroupDTO findByUrl(String url) {
+    public SubgroupDTO findByUrl(final String url) {
         return subgroupMapper.map(subgroupRepository.findByUrl(url));
     }
 
-    public SubgroupDTO findById(Integer id) {
+    public SubgroupDTO findById(final Integer id) {
         return subgroupMapper.map(subgroupRepository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 

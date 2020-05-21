@@ -11,6 +11,8 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
+ * DTO for Category entities
+ *
  * @author Dmitry Matrizaev
  * @since 04.05.2020
  */

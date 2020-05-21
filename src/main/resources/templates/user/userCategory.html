@@ -26,15 +26,18 @@
             <div class="project-description" th:text="${categoryDTO.description}"></div>
         </div>
         <div th:each="projectDTO : ${projects}" class="col-md-4 card-group infinite-scroll">
-            <div class="card mb-4 shadow-sm">
-                <a th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
+            <div class="card shadow-sm">
+                <a class="card-container" th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
                 (categoryUrl = ${projectDTO.subgroup.category.url}, subgroupUrl = ${projectDTO.subgroup.url}, projectUrl = ${projectDTO.url})}">
-                    <img class="card-img-top card-image"
+                    <img class="card-img-top"
                          th:src="@{'data:image/jpeg;base64,' + ${projectDTO.firstImage.data}}" alt="">
+                    <div class="overlay">
+                        <p class="card-text" th:text="${projectDTO.title}"></p>
+                    </div>
+                    <div class="visible-on-mobile">
+                        <p class="card-text" th:text="${projectDTO.title}"></p>
+                    </div>
                 </a>
-                <div class="card-body bg-light">
-                    <p class="card-title" th:text="${projectDTO.title}"></p>
-                </div>
             </div>
         </div>
     </div>

@@ -54,8 +54,13 @@
                         <label>URL <input type="text" th:name="url" th:value="*{url}"></label>
                         <label th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></label>
                     </div>
+                    <div>Description</div>
+                    <label>
+                        <textarea rows="5" cols="120" th:name="description" th:inline="text">
+                            [[${categoryDTO.description}]]
+                        </textarea>
+                    </label>
                     <div>
-                        <label>Description <input type="text" th:name="description" th:value="*{description}"></label>
                         <label th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></label>
                     </div>
                     <div th:if="${#fields.hasErrors('global')}">

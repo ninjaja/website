@@ -9,6 +9,8 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
+ * Validator for titles uniqueness
+ *
  * @author Dmitry Matrizaev
  * @since 08.05.2020
  */

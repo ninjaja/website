@@ -8,6 +8,7 @@ import javax.persistence.QueryHint;
 import java.util.List;
 
 /**
+ * Repository for Subgroup entities
  *
  * @author Dmitry Matrizaev
  * @since 20.04.2020

@@ -8,6 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for URL uniqueness
+ *
  * @author Dmitry Matrizaev
  * @since 08.05.2020
  */

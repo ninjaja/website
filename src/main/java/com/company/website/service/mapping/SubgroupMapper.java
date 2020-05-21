@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
+ * Mapper for Subgroup entities and DTO
+ *
  * @author Dmitry Matrizaev
  * @since 05.05.2020
  */
@@ -31,11 +33,10 @@ public class SubgroupMapper {
         return dto;
     }
 
-    public Subgroup copyFromDto(final SubgroupDTO dto, final Subgroup subgroup) {
+    public void copyFromDto(final SubgroupDTO dto, final Subgroup subgroup) {
         subgroup.setTitle(dto.getTitle());
         subgroup.setUrl(dto.getUrl());
         subgroup.setDescription(dto.getDescription());
-        return subgroup;
     }
 
 }

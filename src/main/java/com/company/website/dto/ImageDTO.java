@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * DTO for Image entities
  *
  * @author Dmitry Matrizaev
  * @since 20.04.2020

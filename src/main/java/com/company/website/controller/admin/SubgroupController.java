@@ -23,6 +23,8 @@ import static com.company.website.controller.constants.ControllerConstants.REDIR
 import static com.company.website.controller.constants.ControllerConstants.SUBGROUP_DTO;
 
 /**
+ * Admin console Subgroups page controller
+ *
  * @author Dmitry Matrizaev
  * @since 23.04.2020
  */

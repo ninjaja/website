@@ -1,6 +1,8 @@
 package com.company.website.exception;
 
 /**
+ * Exception to indicate that Project with no images was invoked
+ *
  * @author Dmitry Matrizaev
  * @since 27.04.2020
  */

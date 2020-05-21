@@ -8,6 +8,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,9 +18,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.Set;
 
 /**
+ * Entity bean for projects
  *
  * @author Dmitry Matrizaev
  * @since 20.04.2020
@@ -43,12 +46,15 @@ public class Project implements CustomEntity {
 
     private String description;
 
+    @Column(name = "date_created")
+    private LocalDate dateCreated;
+
     @ManyToOne
     @JoinColumn(name = "subgroup_id")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Subgroup subgroup;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

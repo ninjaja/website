@@ -4,6 +4,8 @@ import com.company.website.dto.CategoryDTO;
 import com.company.website.repository.CategoryRepository;
 
 /**
+ * Validator for category titles uniqueness
+ *
  * @author Dmitry Matrizaev
  * @since 08.05.2020
  */

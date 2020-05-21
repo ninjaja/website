@@ -4,6 +4,8 @@ import com.company.website.model.CustomEntity;
 import org.springframework.data.repository.NoRepositoryBean;
 
 /**
+ * Repository interface for entities requiring @UniqueTitle and @UniqueURL validations
+ *
  * @author Dmitry Matrizaev
  * @since 08.05.2020
  */

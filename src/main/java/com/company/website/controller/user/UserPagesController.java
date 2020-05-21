@@ -23,6 +23,8 @@ import static com.company.website.controller.constants.ControllerConstants.USER_
 import static com.company.website.controller.constants.ControllerConstants.USER_SUBGROUP;
 
 /**
+ * User/visitor pages controller
+ *
  * @author Dmitry Matrizaev
  * @since 20.04.2020
  */

@@ -25,11 +25,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -38,12 +38,15 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
+ * Service layer for images
+ *
  * @author Dmitry Matrizaev
  * @since 27.04.2020
  */
@@ -112,6 +115,10 @@ public class ImageService {
         final CategoryDTO categoryDTO = categoryMapper.map(category);
         subgroupDTO.setCategory(categoryDTO);
         projectDTO.setSubgroup(subgroupDTO);
+        final String date = processDate(project);
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(date)) {
+            projectDTO.setDateCreated(date);
+        }
     }
 
     public String applyDataOnRead(final ImageDTO image, final int projectId) {
@@ -202,6 +209,14 @@ public class ImageService {
     public Page<ImageDTO> findAllByProjectPaginated(ProjectDTO project, Pageable pageable) {
         return imageRepository.findAllByProjectTitle(project.getTitle(), pageable)
                 .map(imageMapper::map);
+    }
+
+    private String processDate(Project project) {
+        final LocalDate date = project.getDateCreated();
+        if (Objects.nonNull(date)) {
+            return date.toString();
+        }
+        return "";
     }
 
 }

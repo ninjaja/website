@@ -18,6 +18,8 @@ import static com.company.website.controller.constants.ControllerConstants.CATEG
 import static com.company.website.controller.constants.ControllerConstants.REDIRECT_TO_ADMIN;
 
 /**
+ * Admin console main page controller
+ *
  * @author Dmitry Matrizaev
  * @since 20.04.2020
  */
@@ -47,7 +49,7 @@ public class AdminMainController {
         return REDIRECT_TO_ADMIN;
     }
 
-    private String serveAdminPage(CategoryDTO categoryDTO, Model model) {
+    private String serveAdminPage(final CategoryDTO categoryDTO, final Model model) {
         model.addAttribute(CATEGORY_DTO, categoryDTO);
         model.addAttribute(CATEGORIES, categoryService.findAll());
         return ADMIN_HOME;

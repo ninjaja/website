@@ -5,6 +5,8 @@ import com.company.website.model.User;
 import org.springframework.stereotype.Component;
 
 /**
+ * Mapper for User entities and DTO
+ *
  * @author Dmitry Matrizaev
  * @since 05.05.2020
  */

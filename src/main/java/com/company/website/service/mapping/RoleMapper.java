@@ -5,6 +5,8 @@ import com.company.website.model.Role;
 import org.springframework.stereotype.Component;
 
 /**
+ * Mapper for Role entities and DTO
+ *
  * @author Dmitry Matrizaev
  * @since 05.05.2020
  */

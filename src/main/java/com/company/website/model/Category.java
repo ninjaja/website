@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
+ * Entity bean for categories
  *
  * @author Dmitry Matrizaev
  * @since 20.04.2020

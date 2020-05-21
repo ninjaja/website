@@ -1,6 +1,8 @@
 package com.company.website.controller.constants;
 
 /**
+ * Controller-specific constants
+ *
  * @author Dmitry Matrizaev
  * @since 14.05.2020
  */

@@ -9,6 +9,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 /**
+ * Validator for username uniqueness
+ *
  * @author Dmitry Matrizaev
  * @since 07.05.2020
  */
@@ -25,7 +27,7 @@ public class UsernameValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        UserDTO userDTO = (UserDTO) target;
+        final UserDTO userDTO = (UserDTO) target;
         if (userService.existsByLogin(userDTO.getLogin())) {
             errors.reject("login.exists", "Login exists, please select another login");
         }

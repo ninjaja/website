@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
+ * Mapper for Project entities and DTO
+ *
  * @author Dmitry Matrizaev
  * @since 05.05.2020
  */
@@ -40,11 +42,10 @@ public class ProjectMapper {
         return dto;
     }
 
-    public Project copyFromDto(final ProjectDTO dto, final Project project) {
+    public void copyFromDto(final ProjectDTO dto, final Project project) {
         project.setTitle(dto.getTitle());
         project.setUrl(dto.getUrl());
         project.setDescription(dto.getDescription());
-        return project;
     }
 
     public ImageDTO getAnyImage(Project project) {

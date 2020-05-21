@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * DTO for Role entities
  *
  * @author Dmitry Matrizaev
  * @since 21.04.2020

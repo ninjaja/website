@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
+ * DTO for Subgroup entities
  *
  * @author Dmitry Matrizaev
  * @since 20.04.2020

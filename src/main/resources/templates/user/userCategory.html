@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${categoryDTO.title}"></title>
+    <div th:replace="header :: custom_header"></div>
+
+
+</head>
+<body class="no-scrollbar">
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-group dropright project-title">
+                <button type="button" th:text="${categoryDTO.title}" class="btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu">
+                    <a th:each="subgroup : ${categoryDTO.subgroups}" class="dropdown-item" th:href="@{/{categoryUrl}/{subgroupUrl}
+                (categoryUrl = ${categoryDTO.url}, subgroupUrl = ${subgroup.url})}"
+                       th:text="${subgroup.title}"></a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">All</a>
+                </div>
+            </div>
+
+            <div class="project-description" th:text="${categoryDTO.description}"></div>
+        </div>
+        <div th:each="projectDTO : ${projects}" class="col-md-4 card-group infinite-scroll">
+            <div class="card shadow-sm">
+                <a class="card-container" th:href="@{/{categoryUrl}/{subgroupUrl}/{projectUrl}
+                (categoryUrl = ${projectDTO.subgroup.category.url}, subgroupUrl = ${projectDTO.subgroup.url}, projectUrl = ${projectDTO.url})}">
+                    <img class="card-img-top"
+                         th:src="@{'data:image/jpeg;base64,' + ${projectDTO.firstImage.data}}" alt="">
+                    <div class="overlay">
+                        <p class="card-text" th:text="${projectDTO.title}"></p>
+                    </div>
+                    <div class="visible-on-mobile">
+                        <p class="card-text" th:text="${projectDTO.title}"></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:insert="footer :: custom_footer"></div>
+</body>
+</html>

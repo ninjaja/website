@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${categoryDTO.title}"></title>
+    <div th:replace="header :: custom_header"></div>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="project-title" th:text="${categoryDTO.title}"></h3>
+            <div class="project-description" th:text="${categoryDTO.description}"></div>
+            <div>
+                <div><b>Edit category:</b></div>
+                <form th:action="@{/admin/editCategory}" th:object="${categoryDTO}" method="post">
+                    <div>
+                        <label>Title <input type="text" th:name="title" th:value="*{title}"></label>
+                        <label th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></label>
+                    </div>
+                    <div>
+                        <label>URL <input type="text" th:name="url" th:value="*{url}"></label>
+                        <label th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></label>
+                    </div>
+                    <div>Description</div>
+                    <label>
+                        <textarea rows="3" cols="120" th:name="description" th:text="*{description}"></textarea>
+                    </label>
+                    <div>
+                        <label th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></label>
+                    </div>
+                    <div th:if="${#fields.hasErrors('global')}">
+                        <p th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
+                    </div>
+                    <input type="hidden" name="id" th:field="*{id}">
+                    <div>
+                        <button type="submit">Edit</button>
+                    </div>
+                </form>
+            </div>
+
+            <div>
+                <div><b>Subgroups:</b></div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>URL</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(categoryDTO.subgroups)}">
+                        <td colspan="2"> No subgroups available</td>
+                    </tr>
+                    <tr th:each="subgroup : ${categoryDTO.subgroups}">
+                        <td><span th:text="${subgroup.title}"> Title </span></td>
+                        <td>
+                            <a th:href="@{/admin/{categoryUrl}/{subgroupUrl}(categoryUrl = ${categoryDTO.url},
+                        subgroupUrl = ${subgroup.url})}">
+                                <span th:text="${subgroup.url}"> URL </span>
+                            </a>
+                        </td>
+                        <td><span th:text="${subgroup.description}"> Description </span></td>
+                        <td>
+                            <div>
+                                <form th:action="@{/admin/removeSubgroup}" method="post">
+                                    <input type="hidden" th:name="categoryUrl" th:value="${categoryDTO.url}">
+                                    <input type="hidden" th:name="subgroupUrl" th:value="${subgroup.url}">
+                                    <button type="submit">Remove</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div><b>Add new subgroup:</b></div>
+                <form th:action="@{/admin/addSubgroup}" th:object="${subgroupDTO}" method="post">
+                    <div>
+                        <label>Title <input type="text" th:name="title" th:value="${subgroupDTO.title}"></label>
+                        <label th:if="${#fields.hasErrors('title')}" th:errors="${subgroupDTO.title}"></label>
+                    </div>
+                    <div>
+                        <label>URL <input type="text" th:name="url" th:value="${subgroupDTO.url}"></label>
+                        <label th:if="${#fields.hasErrors('url')}" th:errors="${subgroupDTO.url}"></label>
+                    </div>
+                    <div>Description</div>
+                    <label>
+                        <textarea rows="3" cols="120" th:name="description" th:text="*{description}"></textarea>
+                    </label>
+                    <div>
+                        <label th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></label>
+                    </div>
+                    <div th:if="${#fields.hasErrors('global')}">
+                        <p th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
+                    </div>
+                    <input type="hidden" th:name="categoryUrl" th:value="${categoryDTO.url}">
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:insert="footer :: custom_footer"></div>
+</body>
+</html>
